@@ -32,5 +32,4 @@ class Post_Selector_Activator {
 	public static function activate() {
 
 	}
-
 }

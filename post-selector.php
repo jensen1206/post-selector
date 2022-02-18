@@ -15,14 +15,16 @@
  * @wordpress-plugin
  * Plugin Name:       WP-Post-Selector
  * Plugin URI:        https://www.hummelt-werbeagentur.de/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Auswahl von Beiträgen im Gutenberg-Block Editor mit verschiedenen Ausgabeoptionen.
  * Version:           1.0.0
  * Author:            Jens Wiecker
  * Author URI:        https://wwdh.de
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       post-selector
- * Domain Path:       /languages
+ * License:           MIT License
+ * Requires PHP:      7.4
+ * Requires at least: 5.9
+ * Tested up to:      5.7
+ * Stable tag:        1.0.0
+
  */
 
 // If this file is called directly, abort.
@@ -30,12 +32,16 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'POST_SELECTOR_VERSION', '1.0.0' );
+const POST_SELECTOR_PLUGIN_DB_VERSION = '1.0.0';
+const POST_SELECTOR_MIN_PHP_VERSION = '7.4';
+const POST_SELECTOR_MIN_WP_VERSION = '5.7';
+
+//PLUGIN ROOT PATH
+define('POST_SELECTOR_PLUGIN_DIR', dirname(__FILE__));
+//PLUGIN SLUG
+define('POST_SELECTOR_SLUG_PATH', plugin_basename(__FILE__));
+define('POST_SELECTOR_BASENAME', plugin_basename(__DIR__));
+
 
 /**
  * The code that runs during plugin activation.
@@ -73,10 +79,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-post-selector.php';
  *
  * @since    1.0.0
  */
-function run_post_selector() {
 
-	$plugin = new Post_Selector();
-	$plugin->run();
-
-}
-run_post_selector();
+global $post_selector_plugin;
+$post_selector_plugin = new Post_Selector();
+$post_selector_plugin->run();

@@ -27,9 +27,9 @@ class Post_Selector_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $basename    The ID of this plugin.
 	 */
-	private $plugin_name;
+	private string $basename;
 
 	/**
 	 * The version of this plugin.
@@ -38,20 +38,60 @@ class Post_Selector_Admin {
 	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
-	private $version;
+	private string $version;
+
+	/**
+	 * Store plugin main class to allow public access.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var Post_Selector $main The main class.
+	 */
+	private  Post_Selector $main;
+
+	/**
+	 * License Config of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var  object $config License Config.
+	 */
+	private object $config;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param      string    $plugin_name The name of this plugin.
+	 * @param string $version    The version of this plugin.
+	 *
+	 *@since    1.0.0
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( string $plugin_name, string $version, Post_Selector $main, object $config) {
 
-		$this->plugin_name = $plugin_name;
+		$this->basename = $plugin_name;
 		$this->version = $version;
+		$this->main = $main;
+		$this->config = $config;
+	}
 
+
+	/**
+	 * Register the Update-Checker for the Plugin.
+	 *
+	 * @since    1.0.0
+	 */
+	public function set_post_selector_update_checker() {
+
+		if(get_option("{$this->basename}_server_api")) {
+			$postSelectorUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+				get_option("{$this->basename}_server_api")['update_url'],
+				WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR . $this->basename . '.php',
+				$this->basename
+			);
+			if (get_option("{$this->basename}_server_api")['update_type'] == '1') {
+				$postSelectorUpdateChecker->getVcsApi()->enableReleaseAssets();
+			}
+		}
 	}
 
 	/**
@@ -73,7 +113,7 @@ class Post_Selector_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/post-selector-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->basename, plugin_dir_url( __FILE__ ) . 'css/post-selector-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -96,7 +136,7 @@ class Post_Selector_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-selector-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->basename, plugin_dir_url( __FILE__ ) . 'js/post-selector-admin.js', array( 'jquery' ), $this->version, true );
 
 	}
 
