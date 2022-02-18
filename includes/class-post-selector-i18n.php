@@ -37,7 +37,7 @@ class Post_Selector_i18n {
 		load_plugin_textdomain(
 			'post-selector',
 			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+			dirname( plugin_basename( __FILE__ ), 2 ) . '/languages/'
 		);
 
 	}

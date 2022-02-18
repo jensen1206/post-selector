@@ -1,0 +1,15 @@
+{
+  "name": "Post Selector",
+  "type": "plugin",
+  "basename": "post-selector",
+  "api_server_url": "https://start.hu-ku.com/theme-update/api/v2/",
+
+  "update": {
+    "update_url_git": "https://github.com/jensen1206/post-selector",
+    "update_aktiv": "1",
+    "update_type": "1"
+  },
+
+  "aktivierungs_file_path": "admin",
+  "aktivierungs_file": "class-post-selector-admin.php"
+}

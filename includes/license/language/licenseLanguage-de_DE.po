@@ -1,0 +1,73 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2022-02-18 14:32+0100\n"
+"PO-Revision-Date: 2022-02-18 14:34+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;esc_html;esc_html__;esc_att;esc_attr__;"
+"esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: admin/class_register_exec_license.php:200
+#: admin/class_register_exec_license.php:226
+#, php-format
+msgid "The %s %s has been disabled. Contact the administrator."
+msgstr ""
+"Der %s %s wurde deaktiviert. Wenden Sie sich an den Administrator."
+
+#: class_register_product_license.php:108
+#, php-format
+msgid "%s invalid license: To activate, enter your credentials."
+msgstr ""
+"%s ungültige Lizenz: Geben Sie zur Aktivierung Ihre "
+"Anmeldeinformationen ein."
+
+#: class_register_product_license.php:116
+#, php-format
+msgid "The %s plugin has been successfully activated."
+msgstr "Das %s Plugin wurde erfolgreich aktiviert."
+
+#: partials/license-activate-product.php:28
+#, php-format
+msgid "%s \"%s\" could not be activated!"
+msgstr "%s \"%s\" konnte nicht aktiviert werden!"
+
+#: partials/license-activate-product.php:42
+msgid "activate"
+msgstr "aktivieren"
+
+#: partials/license-activate-product.php:52
+msgid "successfully activated"
+msgstr "erfolgreich aktiviert"
+
+#: partials/license-activate-product.php:54
+msgid "Complete activation"
+msgstr "Aktivierung abschließen"
+
+#: partials/license-activate-product.php:59
+msgid "Enter access data"
+msgstr "Zugangsdaten eingeben"
+
+#: partials/license-activate-product.php:68
+msgid "Client ID"
+msgstr "Client ID"
+
+#: partials/license-activate-product.php:76
+msgid "Client secret"
+msgstr "Client secret"
+
+#: partials/license-activate-product.php:84
+msgid "Save"
+msgstr "Speichern"
+
+#: partials/license-activate-product.php:90
+msgid "ERROR"
+msgstr "FEHLER"
