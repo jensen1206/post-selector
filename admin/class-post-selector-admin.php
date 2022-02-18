@@ -10,6 +10,9 @@
  * @subpackage Post_Selector/admin
  */
 
+use Post\Selector\Post_Selector_Admin_Ajax;
+
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -75,6 +78,131 @@ class Post_Selector_Admin {
 	}
 
 
+	public function register_post_selector_menu() {
+		$hook_suffix = add_menu_page(
+			__( 'Post-Selector 2', 'post-selector' ),
+			__( 'Post-Selector 2', 'post-selector' ),
+			get_option('ps_two_user_role'),
+			'post-selector-two-settings',
+			array( $this, 'admin_post_selector_two_settings_page' ),
+			'dashicons-slides', 7
+		);
+
+		add_action( 'load-' . $hook_suffix, array( $this, 'post_selector_two_load_ajax_admin_options_script' ) );
+	}
+
+	public function admin_post_selector_two_settings_page() :void {
+		require_once 'partials/post-selector-admin-display.php';
+	}
+
+	public function post_selector_two_load_ajax_admin_options_script():void {
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$title_nonce = wp_create_nonce( 'post_selector_two_admin_handle' );
+
+		wp_register_script( 'post-selector-two-admin-ajax-script', '', [], '', true );
+		wp_enqueue_script( 'post-selector-two-admin-ajax-script' );
+		wp_localize_script( 'post-selector-two-admin-ajax-script', 'ps_ajax_obj', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'nonce'    => $title_nonce,
+			'data_table'      => plugin_dir_url( __FILE__ ) . 'json/DataTablesGerman.json'
+		));
+	}
+
+
+	/**
+	 * Register POST SELECTOR AJAX ADMIN RESPONSE HANDLE
+	 *
+	 * @since    1.0.0
+	 */
+	public function prefix_ajax_PS2Handle(): void {
+		check_ajax_referer( 'post_selector_two_admin_handle' );
+		require_once 'ajax/class_post_selector_admin_ajax.php';
+		$adminAjaxHandle = new Post_Selector_Admin_Ajax($this->basename, $this->version, $this->main);
+		wp_send_json($adminAjaxHandle->ps2_admin_ajax_handle());
+	}
+
+	/**
+	 * REGISTER POST-SELECTOR GUTENBERG BLOCK TYPE
+	 *
+	 * @since    1.0.0
+	 */
+	public function gutenberg_block_post_selector_two_register() {
+		global $post_selector_callback;
+		register_block_type( 'hupa/post-selector-two', array(
+			'render_callback' => array($post_selector_callback, 'callback_post_selector_two_block'),
+			'editor_script'   => 'gutenberg-post-selector-two-block',
+		));
+
+		add_filter('gutenberg_block_post_selector_two_render', array($post_selector_callback, 'gutenberg_block_post_selector_two_render_filter'), 10, 20);
+	}
+
+	/**
+	 * REGISTER POST-SELECTOR GUTENBERG SCRIPTS
+	 *
+	 * @since    1.0.0
+	 */
+	public function post_selector_two_plugin_editor_block_scripts(): void {
+		$plugin_asset = require plugin_dir_path( dirname( __FILE__ ) )  . 'admin/gutenberg/post-selector-data/build/index.asset.php';
+		// Scripts.
+		wp_enqueue_script(
+			'gutenberg-post-selector-two-block',
+			plugins_url($this->basename).'/admin/gutenberg/post-selector-data/build/index.js',
+			$plugin_asset['dependencies'], $plugin_asset['version'], true
+		);
+
+		// Styles.
+		wp_enqueue_style(
+			'gutenberg-post-selector-two-block', // Handle.
+			plugins_url($this->basename).'/admin/gutenberg/post-selector-data/build/index.css', array(), $plugin_asset['Version']
+		);
+
+		wp_register_script( 'post-selector-two-rest-gutenberg-js-localize', '', [], $plugin_asset['Version'], true );
+		wp_enqueue_script( 'post-selector-two-rest-gutenberg-js-localize' );
+		wp_localize_script( 'post-selector-two-rest-gutenberg-js-localize',
+			'PS2RestObj',
+			array(
+				'url'   => esc_url_raw( rest_url( 'post-selector-endpoint/v2/method/' ) ),
+				'nonce' => wp_create_nonce( 'wp_rest' )
+			)
+		);
+	}
+
+	/**
+	 * REGISTER POST-SELECTOR GALLERY GUTENBERG BLOCK TYPE
+	 *
+	 * @since    1.0.0
+	 */
+	public function gutenberg_block_post_selector_two_galerie_register() {
+		global $post_selector_callback;
+		register_block_type( 'hupa/post-selector-two-galerie', array(
+			'render_callback' => array($post_selector_callback, 'callback_post_selector_two_galerie'),
+			'editor_script'   => 'gutenberg-post-selector-two-galerie',
+		) );
+	}
+
+	/**
+	 * REGISTER POST-SELECTOR GALLERY GUTENBERG SCRIPTS
+	 *
+	 * @since    1.0.0
+	 */
+	public function post_selector_two_plugin_editor_galerie_scripts(): void {
+		$plugin_asset = require plugin_dir_path( dirname( __FILE__ ) )  . 'admin/gutenberg/galerie-data/build/index.asset.php';
+
+		// Scripts.
+		wp_enqueue_script(
+			'gutenberg-post-selector-two-galerie',
+			plugins_url($this->basename).'/admin/gutenberg/galerie-data/build/index.js',
+			$plugin_asset['dependencies'], $plugin_asset['version'], true
+		);
+
+		// Styles.
+		wp_enqueue_style(
+			'gutenberg-post-selector-two-galerie', // Handle.
+			plugins_url($this->basename).'/admin/gutenberg/galerie-data/build/index.css', array(), $plugin_asset['version']
+		);
+	}
+
 	/**
 	 * Register the Update-Checker for the Plugin.
 	 *
@@ -92,29 +220,6 @@ class Post_Selector_Admin {
 				$postSelectorUpdateChecker->getVcsApi()->enableReleaseAssets();
 			}
 		}
-	}
-
-	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Post_Selector_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Post_Selector_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->basename, plugin_dir_url( __FILE__ ) . 'css/post-selector-admin.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -136,8 +241,56 @@ class Post_Selector_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->basename, plugin_dir_url( __FILE__ ) . 'js/post-selector-admin.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'jquery' );
+		//TODO FontAwesome / Bootstrap
+		wp_enqueue_style( 'post-selector-admin-two-bs-style', plugin_dir_url( __FILE__ ) . 'css/bootstrap.min.css', array(), $this->version, false );
+		// TODO ADMIN ICONS
+		wp_enqueue_style( 'post-selector-two-admin-icons-style', plugin_dir_url( __FILE__ ) . 'css/font-awesome.css', array(), $this->version, false );
+		// TODO DASHBOARD STYLES
+		wp_enqueue_style( 'post-selector-two-admin-dashboard-style', plugin_dir_url( __FILE__ ) . 'css/admin-dashboard-style.css', array(), $this->version, false );
+		// TODO DataTable STYLES
+		wp_enqueue_style( 'post-selector-two-admin-data-table', plugin_dir_url( __FILE__ ) . 'css/tools/dataTables.bootstrap5.min.css', array(), $this->version, false );
 
+		wp_enqueue_style(
+			'post-selector-two-lightbox-css',
+			plugin_dir_url( __FILE__ ) . 'css/tools/blueimp-gallery.css',
+			array(), $this->version );
+
+
+
+
+		//TODO Bootstrap
+		wp_enqueue_script( 'post-selector-two-bs',
+			plugins_url($this->basename) . '/public/js/bs/bootstrap.bundle.min.js', array(),
+			$this->version, true );
+
+		//TODO SORTABLE
+		wp_enqueue_script( 'gutenberg-post-selector-two-sortable',
+			plugin_dir_url( __FILE__ ) . 'js/tools/Sortable.min.js', array(),
+			$this->version, true );
+
+		//TODO LIGHTBOX
+		wp_enqueue_script( 'gutenberg-post-selector-two-lightbox',
+			plugin_dir_url( __FILE__ ) . 'js/tools/blueimp-gallery.min.js', array(),
+			$this->version, true );
+
+		//TODO LIGHTBOX
+		wp_enqueue_script( 'gutenberg-post-selector-two-jq-lightbox',
+			plugin_dir_url( __FILE__ ) . 'js/tools/jquery.blueimp-gallery.js', array(),
+			$this->version, true );
+
+		//DataTables
+		wp_enqueue_script( 'gutenberg-post-selector-two-jq-data-table',
+			plugin_dir_url( __FILE__ ) . 'js/tools/data-table/jquery.dataTables.min.js', array(),
+			$this->version, true );
+		wp_enqueue_script( 'gutenberg-post-selector-two-bs5-data-table',
+			plugin_dir_url( __FILE__ ) . 'js/tools/data-table/dataTables.bootstrap5.min.js', array(),
+			$this->version, true );
+		wp_enqueue_script( 'gutenberg-post-selector-two-data-table-galerie',
+			plugin_dir_url( __FILE__ ) . 'js/tools/data-table/data-table-galerie.js', array(),
+			$this->version, true );
+
+		wp_enqueue_script( 'post-selector-two-script', plugin_dir_url( __FILE__ ) . 'js/post-selector-admin.js', array('jquery'), $this->version, true );
 	}
 
 }

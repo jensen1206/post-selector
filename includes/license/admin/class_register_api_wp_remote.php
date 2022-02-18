@@ -71,7 +71,7 @@ class Register_Api_WP_Remote {
 
 	public function init_register_license_wp_remote_api() {
 		add_filter( 'get_license_api_urls', array( $this, 'hupa_license_api_urls' ) );
-		add_filter( "$this->basename/resource_authorization_code", array( $this, 'Activate_By_Authorization_Code' ) );
+	//	add_filter( "$this->basename/resource_authorization_code", array( $this, 'Activate_By_Authorization_Code' ) );
 	}
 
 	public function hupa_license_api_urls( $scope ): string {
@@ -153,16 +153,16 @@ class Register_Api_WP_Remote {
 		}
 		if ( is_array( $response ) ) {
 			$query = json_decode( $response['body'] );
-			if ( isset( $query->error ) ) {
+			if ( isset( $query->error ) && $query->error ) {
 				if ( $this->get_error_message( $query ) ) {
 					$this->LicenseGetApiClientCredentials();
 				}
 				$response = wp_remote_post( $this->hupa_license_api_urls( $scope ), $this->WP_Remote_Post_Args( $body ) );
 				if (is_array($response)) {
-					return $response['body'];
+					return json_decode($response['body']);
 				}
 			} else {
-				return $response['body'];
+				return $query;
 			}
 		}
 		return false;

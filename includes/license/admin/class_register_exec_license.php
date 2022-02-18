@@ -188,7 +188,7 @@ class Register_Exec_License {
 				delete_option("{$this->basename}_client_secret");
 				delete_option("{$this->basename}_license_url");
 				delete_option("{$this->basename}_product_install_authorize");
-				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', $this->basename ), ucfirst($this->config->type), $this->config->name));
+				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', 'licenseLanguage' ), ucfirst($this->config->type), $this->config->name));
 				$status = true;
 				$msg = $this->config->name . ' erfolgreich deaktiviert.';
 				break;
@@ -214,7 +214,7 @@ class Register_Exec_License {
 				delete_option("{$this->basename}_client_secret");
 				delete_option("{$this->basename}_license_url");
 				delete_option("{$this->basename}_product_install_authorize");
-				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', $this->basename ), ucfirst($this->config->type), $this->config->name));
+				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', 'licenseLanguage' ), ucfirst($this->config->type), $this->config->name));
 				set_transient( "$this->basename-admin-notice-error-panel-" . get_current_user_id() . "" , true, 5);
 
 				$file = $this->produkt_dir . $this->config->aktivierungs_file_path . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;

@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-const POST_SELECTOR_PLUGIN_DB_VERSION = '1.0.0';
+const POST_SELECTOR_PLUGIN_DB_VERSION = '1.0.1';
 const POST_SELECTOR_MIN_PHP_VERSION = '7.4';
 const POST_SELECTOR_MIN_WP_VERSION = '5.7';
 
@@ -41,7 +41,6 @@ define('POST_SELECTOR_PLUGIN_DIR', dirname(__FILE__));
 //PLUGIN SLUG
 define('POST_SELECTOR_SLUG_PATH', plugin_basename(__FILE__));
 define('POST_SELECTOR_BASENAME', plugin_basename(__DIR__));
-
 
 /**
  * The code that runs during plugin activation.

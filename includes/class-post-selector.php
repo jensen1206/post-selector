@@ -13,8 +13,10 @@
  * @subpackage Post_Selector/includes
  */
 
-use Hupa\License\Register_Api_WP_Remote;
 use Hupa\License\Register_Product_License;
+use Post\Selector\Post_Selector_Callback;
+use Post\Selector\Post_Selector_Database_Handle;
+use Post\Selector\Register_Post_Selector_Endpoint;
 
 
 /**
@@ -121,8 +123,10 @@ class Post_Selector {
 		$this->check_dependencies();
 		$this->load_dependencies();
 		$this->set_locale();
-		$this->define_wp_remote_api_license_class();
 		$this->define_product_license_class();
+		$this->register_post_selector_endpoint();
+		$this->register_post_selector_render_callback();
+		$this->register_post_selector_database_handle();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -158,16 +162,28 @@ class Post_Selector {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-selector-i18n.php';
 
 		/**
+		 * The trait for the default settings
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait_post_selector_defaults.php';
+
+		/**
+		 * The  database for the Post-Sector Plugin
+		 * of the plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/database/class_post_selector_database_handle.php';
+
+		/**
+		 * TWIG autoload for PHP-Template-Engine
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/twig/autoload.php';
+
+		/**
 		 * Update-Checker-Autoload
 		 * Git Update for Theme|Plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/update-checker/autoload.php';
-
-
-		/**
-		 * The class responsible for defining all WP_Remote actions.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/license/admin/class_register_api_wp_remote.php';
 
 
 		/**
@@ -176,12 +192,18 @@ class Post_Selector {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/license/class_register_product_license.php';
 
 		/**
+		 * The class responsible for defining WP REST API Routes
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gutenberg/class_register_post_selector_endpoint.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		if(is_file(plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php')){
+		if ( is_file( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php' ) ) {
+			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gutenberg/class_post_selector_callback.php';
 			require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php';
 		}
-
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -254,21 +276,6 @@ class Post_Selector {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_wp_remote_api_license_class() {
-
-		global $license_wp_remote;
-		$license_wp_remote = new Register_Api_WP_Remote( $this->get_plugin_name(), $this->get_version(), $this->get_license_config(), $this->main );
-		$this->loader->add_action('plugin_loaded', $license_wp_remote, 'init_register_license_wp_remote_api');
-
-	}
-
-	/**
-	 * Register all the hooks related to the admin area functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
 	private function define_product_license_class() {
 
 		if(!get_option('hupa_server_url')){
@@ -289,13 +296,68 @@ class Post_Selector {
 	 */
 	private function define_admin_hooks() {
 
-		//if(is_file(plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php') && get_option( $this->plugin_name . '/product_install_authorize' )) {
+		if(!get_option('ps_two_user_role')){
+			update_option('ps_two_user_role', 'manage_options');
+		}
+
+		if ( is_file( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php' ) && get_option( "{$this->plugin_name}_product_install_authorize" ) ) {
 			$plugin_admin = new Post_Selector_Admin( $this->get_plugin_name(), $this->get_version(), $this->main, $this->get_license_config() );
 			$this->loader->add_action( 'init', $plugin_admin, 'set_post_selector_update_checker' );
 
-			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-			$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		//}
+			//Gutenberg INIT
+			$this->loader->add_action( 'init', $plugin_admin, 'gutenberg_block_post_selector_two_register' );
+			$this->loader->add_action( 'init', $plugin_admin, 'gutenberg_block_post_selector_two_galerie_register' );
+			//Gutenberg Scripts
+			$this->loader->add_action( 'enqueue_block_editor_assets', $plugin_admin, 'post_selector_two_plugin_editor_block_scripts' );
+			$this->loader->add_action( 'enqueue_block_editor_assets', $plugin_admin, 'post_selector_two_plugin_editor_galerie_scripts' );
+			//Admin Menu | AJAX
+			$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_post_selector_menu' );
+			$this->loader->add_action( 'wp_ajax_PS2Handle', $plugin_admin, 'prefix_ajax_PS2Handle' );
+
+			//
+
+		}
+	}
+
+
+	/**
+	 * Register all the hooks related to the Gutenberg Plugins functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function register_post_selector_database_handle() {
+		global $post_selector_database;
+		$post_selector_database = new Post_Selector_Database_Handle( $this->get_db_version(), $this->main );
+
+		$this->loader->add_action( 'init', $post_selector_database, 'post_selector_check_jal_install' );
+
+	}
+	/**
+	 * Register all the hooks related to the Gutenberg Plugins functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function register_post_selector_render_callback() {
+		global $post_selector_callback;
+		if ( is_file( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php' ) && get_option( "{$this->plugin_name}_product_install_authorize" ) ) {
+			$post_selector_callback = new Post_Selector_Callback( $this->get_plugin_name(), $this->get_version(), $this->main );
+		}
+	}
+
+	/**
+	 * Register all the hooks related to the Gutenberg Plugins functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function register_post_selector_endpoint() {
+		global $post_selector_endpoint;
+		$post_selector_endpoint = new Register_Post_Selector_Endpoint( $this->get_plugin_name(), $this->get_version(), $this->main );
 	}
 
 	/**
@@ -307,6 +369,10 @@ class Post_Selector {
 	 */
 	private function define_public_hooks() {
 		$plugin_public = new Post_Selector_Public( $this->get_plugin_name(), $this->get_version() );
+
+		$this->loader->add_action( 'wp_ajax_nopriv_PS2HandlePublic', $plugin_public, 'prefix_ajax_PS2HandlePublic' );
+		$this->loader->add_action( 'wp_ajax_PS2HandlePublic', $plugin_public, 'prefix_ajax_PS2HandlePublic' );
+
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 

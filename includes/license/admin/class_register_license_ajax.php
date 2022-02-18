@@ -133,7 +133,7 @@ class Register_License_Ajax {
 					return $responseJson;
 				}
 
-				if(get_option("$this->basename/product_install_authorize")) {
+				if(get_option("{$this->basename}_product_install_authorize")) {
 					$responseJson->status = true;
 					$responseJson->if_authorize = true;
 					return $responseJson;
@@ -144,7 +144,7 @@ class Register_License_Ajax {
 				update_option( "{$this->basename}_client_secret", $client_secret );
 				$responseJson->status = true;
 				$responseJson->send_url = apply_filters('get_license_api_urls', 'authorize_url');
-				$responseJson->if_authorize = get_option("$this->basename/product_install_authorize");
+				$responseJson->if_authorize = get_option("{$this->basename}_product_install_authorize");
 				break;
 		}
 
