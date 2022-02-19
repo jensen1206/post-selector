@@ -1,6 +1,7 @@
 <?php
 namespace Post\Selector;
 
+use finfo;
 use Post_Selector;
 use stdClass;
 
@@ -102,7 +103,7 @@ class Post_Selector_Admin_Ajax {
 
 	}
 
-	public function ps2_admin_ajax_handle():object {
+	public function ps2_admin_ajax_handle() {
 
 		$responseJson         = new stdClass();
 		$record = new stdClass();
@@ -306,20 +307,20 @@ class Post_Selector_Admin_Ajax {
 
 
 				$record->bezeichnung = $bezeichnung;
-				$record->slider_id   = apply_filters( 'get_ps_generate_random_id', 12, 0 );
+				$record->slider_id   = apply_filters( $this->basename.'/generate_random_id', 12, 0 );
 				$record->data        = json_encode( $sliderSettings );
 
 				switch ( $type ) {
 					case 'insert':
 					case 'demo':
 						if($type == 'demo' && $demo_type){
-							$demo = apply_filters('get_post_slider_demo', $demo_type);
+							$demo = apply_filters($this->basename.'/get_post_slider_demo', $demo_type);
 							if($demo->status) {
 								$record->bezeichnung = $demo->bezeichnung;
 								$record->data        = json_encode( $demo->record );
 							}
 						}
-						$insert               = apply_filters( 'post_selector_set_slider', $record );
+						$insert               = apply_filters( $this->basename.'/post_selector_set_slider', $record );
 						$responseJson->status = $insert->status;
 						$responseJson->msg    = $insert->msg;
 						break;
@@ -331,13 +332,13 @@ class Post_Selector_Admin_Ajax {
 							return $responseJson;
 						}
 						$record->id = $id;
-						apply_filters( 'update_post_selector_slider', $record );
+						apply_filters( $this->basename.'/update_post_selector_slider', $record );
 						$responseJson->status = true;
 						$responseJson->msg    = 'Änderungen gespeichert!';
 						break;
 				}
 
-				$load_toast = apply_filters( 'post_selector_get_by_args', 'ORDER BY created_at ASC' );
+				$load_toast = apply_filters( $this->basename.'/post_selector_get_by_args', 'ORDER BY created_at ASC' );
 				if ( $load_toast->status ) {
 					$responseJson->load_toast = $load_toast->record;
 				}
@@ -387,7 +388,7 @@ class Post_Selector_Admin_Ajax {
 				}
 
 				if(!$bezeichnung) {
-					$bezeichnung = 'Galerie-' .apply_filters('get_ps_generate_random_id',4,0,4);
+					$bezeichnung = 'Galerie-' .apply_filters($this->basename.'/generate_random_id',4,0,4);
 				}
 
 				switch ($record->type){
@@ -480,7 +481,7 @@ class Post_Selector_Admin_Ajax {
 
 				switch ($type){
 					case'insert':
-						$insert = apply_filters('post_selector_set_galerie', $record);
+						$insert = apply_filters($this->basename.'/post_selector_set_galerie', $record);
 						if(!$insert->id) {
 							$responseJson->msg = $insert->msg;
 							$responseJson->status = false;
@@ -488,7 +489,7 @@ class Post_Selector_Admin_Ajax {
 						}
 						$responseJson->id = $insert->id;
 						$args = sprintf('WHERE id=%d', $insert->id);
-						$galerie = apply_filters('post_selector_get_galerie','');
+						$galerie = apply_filters($this->basename.'/post_selector_get_galerie','');
 						if(!$galerie->status){
 							$responseJson->msg = 'Ein Fehler ist aufgetreten!';
 							$responseJson->status = false;
@@ -511,7 +512,7 @@ class Post_Selector_Admin_Ajax {
 							return $responseJson;
 						}
 						$record->id = $id;
-						apply_filters('post_selector_update_galerie', $record);
+						apply_filters($this->basename.'/post_selector_update_galerie', $record);
 						$responseJson->msg = 'Änderungen erfolgreich gespeichert!';
 
 						break;
@@ -528,7 +529,7 @@ class Post_Selector_Admin_Ajax {
 
 				switch ($type) {
 					case'galerie-toast':
-						$galerie = apply_filters('post_selector_get_galerie','');
+						$galerie = apply_filters($this->basename.'/post_selector_get_galerie','');
 						$responseJson->galerie = $galerie->record;
 						return $responseJson;
 				}
@@ -539,26 +540,26 @@ class Post_Selector_Admin_Ajax {
 					return $responseJson;
 				}
 
-				$responseJson->aniSelect = apply_filters('post_selector_get_animate_select', false);
+				$responseJson->aniSelect = apply_filters($this->basename.'/post_selector_get_animate_select', false);
 
-				$pages = apply_filters('post_selector_get_theme_pages', false);
-				$post = apply_filters('post_selector_get_theme_posts', false);
+				$pages = apply_filters($this->basename.'/post_selector_get_theme_pages', false);
+				$post = apply_filters($this->basename.'/post_selector_get_theme_posts', false);
 				if ($post) {
 					$responseJson->sitesSelect = array_merge_recursive($pages, $post);
 				} else {
 					$responseJson->sitesSelect = $pages;
 				}
-				$responseJson->galerieSelect = apply_filters('get_galerie_types_select','');
+				$responseJson->galerieSelect = apply_filters($this->basename.'/get_galerie_types_select','');
 
 				$galerieArgs = sprintf('WHERE id=%d', $id);
-				$galerie = apply_filters('post_selector_get_galerie',$galerieArgs, false);
+				$galerie = apply_filters($this->basename.'/post_selector_get_galerie',$galerieArgs, false);
 				$responseJson->record = $galerie->record;
 
 				$galerie->record->type_settings = json_decode($galerie->record->type_settings);
 
 
 				$args = sprintf('WHERE galerie_id=%d ORDER BY position ASC', $id);
-				$images = apply_filters('post_selector_get_images',$args);
+				$images = apply_filters($this->basename.'/post_selector_get_images',$args);
 
 				$img_arr = [];
 				if($images->status){
@@ -591,7 +592,7 @@ class Post_Selector_Admin_Ajax {
 					$responseJson->status = false;
 					return $responseJson;
 				}
-				apply_filters('post_selector_delete_image', $id);
+				apply_filters($this->basename.'/post_selector_delete_image', $id);
 				$responseJson->id = $id;
 				$responseJson->status = true;
 				$responseJson->msg = 'Bild gelöscht!';
@@ -609,7 +610,7 @@ class Post_Selector_Admin_Ajax {
 						$image_id   = filter_input( INPUT_POST, 'image_id', FILTER_VALIDATE_INT );
 						$record->galerie_id = (int) $galerie_id;
 						$record->img_id = (int) $image_id;
-						$insert = apply_filters('post_selector_set_image', $record);
+						$insert = apply_filters($this->basename.'/post_selector_set_image', $record);
 						$responseJson->id = $insert->id;
 						break;
 					case'update':
@@ -638,7 +639,7 @@ class Post_Selector_Admin_Ajax {
 							$record->link = '';
 						}
 
-						apply_filters('post_selector_update_image', $record);
+						apply_filters($this->basename.'/post_selector_update_image', $record);
 						$responseJson->msg = 'Änderungen gespeichert!';
 						break;
 				}
@@ -654,8 +655,8 @@ class Post_Selector_Admin_Ajax {
 					$responseJson->status = false;
 					return $responseJson;
 				}
-				apply_filters('post_selector_delete_galerie', $id);
-				$galerie = apply_filters('post_selector_get_galerie','');
+				apply_filters($this->basename.'/post_selector_delete_galerie', $id);
+				$galerie = apply_filters($this->basename.'/post_selector_get_galerie','');
 				$responseJson->type = $type;
 				$responseJson->galerie = $galerie->record;
 				$responseJson->status = true;
@@ -687,16 +688,16 @@ class Post_Selector_Admin_Ajax {
 					$responseJson->load_toast = true;
 				}
 				//Get Galerie
-				$galerie = apply_filters('post_selector_get_galerie', '');
+				$galerie = apply_filters($this->basename.'/post_selector_get_galerie', '');
 				$galerie->status ? $responseJson->galerie = $galerie->record : $responseJson->galerie = false;
 
 				//Get Slider
-				$load_toast = apply_filters( 'post_selector_get_by_args', $args, $fetch );
+				$load_toast = apply_filters( $this->basename.'/post_selector_get_by_args', $args, $fetch );
 				if ( ! $load_toast->status ) {
 					return $responseJson;
 				}
 				$responseJson->record = $load_toast->record;
-				$responseJson->select_optionen = apply_filters('ps_select_design_optionen',false);
+				$responseJson->select_optionen = apply_filters($this->basename.'/ps_select_design_optionen',false);
 				$responseJson->status = true;
 				break;
 
@@ -711,7 +712,7 @@ class Post_Selector_Admin_Ajax {
 				}
 				switch ( $type ) {
 					case 'slider':
-						apply_filters( 'delete_post_selector_slider', $id );
+						apply_filters( $this->basename.'/delete_post_selector_slider', $id );
 						break;
 				}
 				$responseJson->id     = $id;
@@ -721,15 +722,15 @@ class Post_Selector_Admin_Ajax {
 				break;
 
 			case 'get_galerie_modal_data':
-				$pages = apply_filters('post_selector_get_theme_pages', false);
-				$post = apply_filters('post_selector_get_theme_posts', false);
+				$pages = apply_filters($this->basename.'/post_selector_get_theme_pages', false);
+				$post = apply_filters($this->basename.'/post_selector_get_theme_posts', false);
 				if ($post) {
 					$responseJson->sitesSelect = array_merge_recursive($pages, $post);
 				} else {
 					$responseJson->sitesSelect = $pages;
 				}
-				$responseJson->aniSelect = apply_filters('post_selector_get_animate_select', false);
-				$responseJson->galerieSelect = apply_filters('get_galerie_types_select','');
+				$responseJson->aniSelect = apply_filters($this->basename.'/post_selector_get_animate_select', false);
+				$responseJson->galerieSelect = apply_filters($this->basename.'/get_galerie_types_select','');
 				$responseJson->status = true;
 				break;
 
@@ -743,7 +744,7 @@ class Post_Selector_Admin_Ajax {
 				}
 
 				$args = sprintf('WHERE id=%d ORDER BY position ASC', $id);
-				$image = apply_filters('post_selector_get_images', $args, false);
+				$image = apply_filters($this->basename.'/post_selector_get_images', $args, false);
 				if(!$image->status){
 					$responseJson->msg = 'Ein Fehler ist aufgetreten!';
 					$responseJson->status = false;
@@ -751,15 +752,15 @@ class Post_Selector_Admin_Ajax {
 				}
 
 				$responseJson->record = $image->record;
-				$pages = apply_filters('post_selector_get_theme_pages', false);
-				$post = apply_filters('post_selector_get_theme_posts', false);
+				$pages = apply_filters($this->basename.'/post_selector_get_theme_pages', false);
+				$post = apply_filters($this->basename.'/post_selector_get_theme_posts', false);
 				if ($post) {
 					$responseJson->sitesSelect = array_merge_recursive($pages, $post);
 				} else {
 					$responseJson->sitesSelect = $pages;
 				}
 
-				$responseJson->galerieSelect = apply_filters('get_galerie_types_select','');
+				$responseJson->galerieSelect = apply_filters($this->basename.'/get_galerie_types_select','');
 				$responseJson->status = true;
 				break;
 
@@ -773,14 +774,14 @@ class Post_Selector_Admin_Ajax {
 
 				if($id){
 					$galerieArgs = sprintf('WHERE id=%d', $id);
-					$galerie = apply_filters('post_selector_get_galerie',$galerieArgs, false);
+					$galerie = apply_filters($this->basename.'/post_selector_get_galerie',$galerieArgs, false);
 					$galerie->status ? $responseJson->typeSettings = json_decode($galerie->record->type_settings) : $responseJson->typeSettings = false;
 				}
 
 				$responseJson->type = (string) $typeId;
 				switch ($typeId){
 					case '1':
-						$postSlider = apply_filters('post_selector_get_by_args','', true, 'bezeichnung, id');
+						$postSlider = apply_filters($this->basename.'/post_selector_get_by_args','', true, 'bezeichnung, id');
 						if(!$postSlider->status){
 							$responseJson->msg = 'kein Slider gefunden!';
 							return $responseJson;
@@ -791,7 +792,7 @@ class Post_Selector_Admin_Ajax {
 						break;
 					case '2':
 					case '3':
-						$responseJson->aniSelect = apply_filters('post_selector_get_animate_select', false);
+						$responseJson->aniSelect = apply_filters($this->basename.'/post_selector_get_animate_select', false);
 						$responseJson->status = true;
 						$responseJson->disabled = false;
 						break;
@@ -805,7 +806,7 @@ class Post_Selector_Admin_Ajax {
 					foreach ($_POST['data'] as $tmp){
 						preg_match($regEx, $tmp, $hit);
 						if($hit[0]){
-							apply_filters('post_update_sortable_position',$hit[0], $position);
+							apply_filters($this->basename.'/post_update_sortable_position',$hit[0], $position);
 							$position++;
 						}
 					}
@@ -818,7 +819,7 @@ class Post_Selector_Admin_Ajax {
 				if($_POST['images']){
 					foreach ($_POST['images'] as $tmp){
 						$id = filter_var($tmp, FILTER_VALIDATE_INT);
-						apply_filters('post_selector_delete_image', $id);
+						apply_filters($this->basename.'/post_selector_delete_image', $id);
 					}
 
 					$responseJson->status = true;
@@ -833,7 +834,7 @@ class Post_Selector_Admin_Ajax {
 					return $responseJson;
 				}
 
-				update_option('ps_user_role', $userRole);
+				update_option('ps_two_user_role', $userRole);
 				$responseJson->status = true;
 				$responseJson->msg = date('H:i:s', current_time('timestamp'));
 				break;
@@ -854,11 +855,11 @@ class Post_Selector_Admin_Ajax {
 
 				if (isset($_POST['search']['value'])) {
 					$query = 'WHERE ( galerie_id='. $id .'
-         AND ( img_title LIKE "%' . $_POST['search']['value'] . '%"
-         OR created_at LIKE "%' . $_POST['search']['value'] . '%"
-         OR img_caption LIKE "%' . $_POST['search']['value'] . '%"
-         OR img_beschreibung LIKE "%' . $_POST['search']['value'] . '%"
-       ) ) ';
+                              AND ( img_title LIKE "%' . $_POST['search']['value'] . '%"
+                              OR created_at LIKE "%' . $_POST['search']['value'] . '%"
+                              OR img_caption LIKE "%' . $_POST['search']['value'] . '%"
+                              OR img_beschreibung LIKE "%' . $_POST['search']['value'] . '%"
+                            ) ) ';
 				} else {
 					$query = 'WHERE galerie_id='.$id.'';
 				}
@@ -874,10 +875,10 @@ class Post_Selector_Admin_Ajax {
 					$limit = ' LIMIT ' . $_POST['start'] . ', ' . $_POST['length'];
 				}
 
-				$table = apply_filters('post_selector_get_images',$query . $limit);
+				$table = apply_filters($this->basename.'/post_selector_get_images',$query . $limit);
 				$data_arr = array();
 				if (!$table->status) {
-					return $responseJson = array(
+					return array(
 						"draw" => $_POST['draw'],
 						"recordsTotal" => 0,
 						"recordsFiltered" => 0,
@@ -913,7 +914,7 @@ class Post_Selector_Admin_Ajax {
 					$data_arr[] = $data_item;
 				}
 
-				$tbCount = apply_filters('post_selector_get_images', 'WHERE galerie_id='.$id.'');
+				$tbCount = apply_filters($this->basename.'/post_selector_get_images', 'WHERE galerie_id='.$id.'');
 				$responseJson = array(
 					"draw" => $_POST['draw'],
 					"recordsTotal" => $tbCount->count,

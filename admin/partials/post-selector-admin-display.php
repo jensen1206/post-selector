@@ -17,42 +17,42 @@
         <div class="card card-license shadow-sm">
             <h5 class="card-header d-flex align-items-center bg-hupa py-4">
                 <i class="icon-hupa-white d-block mt-2" style="font-size: 2rem"></i>&nbsp;
-				<?= __('Post Selector', 'wp-post-selector') ?> </h5>
+				<?= __('Post Selector', 'post-selector') ?> </h5>
             <div class="card-body pb-4" style="min-height: 72vh">
                 <div class="d-flex align-items-center">
                     <h5 class="card-title"><i
-                                class="hupa-color fa fa-arrow-circle-right"></i> <?= __('Post Selector', 'wp-post-selector') ?>
-                        / <span id="currentSideTitle"><?= __('Übersicht', 'wp-post-selector') ?></span>
+                                class="hupa-color fa fa-arrow-circle-right"></i> <?= __('Post Selector', 'post-selector') ?>
+                        / <span id="currentSideTitle"><?= __('Overview', 'post-selector') ?></span>
                     </h5>
                 </div>
                 <hr>
                 <div class="settings-btn-group d-block d-md-flex flex-wrap">
-                    <button data-site="<?= __('Slider', 'wp-post-selector') ?>"
+                    <button data-site="<?= __('Slider', 'post-selector') ?>"
                             type="button"
                             data-type="slider"
                             id="btnDataSlider"
                             data-bs-toggle="collapse" data-bs-target="#collapsePostSelectOverviewSite"
                             class="btn-post-collapse btn btn-hupa btn-outline-secondary btn-sm active" disabled>
                         <i class="fa fa-sliders"></i>&nbsp;
-						<?= __('Slider', 'wp-post-selector') ?>
+						<?= __('Slider', 'post-selector') ?>
                     </button>
 
-                    <button data-site="<?= __('Galerie', 'wp-post-selector') ?>"
+                    <button data-site="<?= __('Gallery', 'post-selector') ?>"
                             data-type="galerie"
                             type="button" id="postEditCollapseBtn"
                             data-bs-toggle="collapse" data-bs-target="#collapseGalerieSite"
                             class="btn-post-collapse btn btn-hupa btn-outline-secondary btn-sm">
                         <i class="fa fa-image"></i>&nbsp;
-						<?= __('Galerie', 'wp-post-selector') ?>
+						<?= __('Gallery', 'post-selector') ?>
                     </button>
 
-                    <button data-site="<?= __('Settings', 'wp-post-selector') ?>"
+                    <button data-site="<?= __('Settings', 'post-selector') ?>"
                             data-type="settings"
                             type="button" id="postEditCollapseBtn"
                             data-bs-toggle="collapse" data-bs-target="#collapseSettingsSite"
                             class="btn-post-collapse ms-auto btn btn-hupa btn-outline-secondary btn-sm">
                         <i class="fa fa-cogs"></i>&nbsp;
-						<?= __('Settings', 'wp-post-selector') ?>
+						<?= __('Settings', 'post-selector') ?>
                     </button>
 
                 </div>
@@ -61,22 +61,10 @@
                     <!--  TODO JOB WARNING STARTSEITE -->
                     <div class="collapse show" id="collapsePostSelectOverviewSite"
                          data-bs-parent="#post_display_parent">
-						<?php
-						$args = array(
-
-							'category' => 24,
-							'posts_per_page' => -1,
-							'orderby' => 'menu_order',
-							'order'   => 'ASC',
-						);
-						//  $posts = get_posts( $args );
-						//  print_r($posts);
-						?>
-
                         <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray" style="min-height: 53vh">
                             <div class="d-flex align-items-center">
                                 <h5 class="card-title">
-                                    <i class="font-blue fa fa-sliders"></i>&nbsp;<?= __('Post Selector Slider', 'wp-post-selector') ?>
+                                    <i class="font-blue fa fa-sliders"></i>&nbsp;<?= __('Post Selector Slider', 'post-selector') ?>
                                 </h5>
                                 <div class="ajax-status-spinner ms-auto d-inline-block mb-2 pe-2"></div>
                             </div>
@@ -103,14 +91,14 @@
                         <div class="border rounded mt-1 mb-3 shadow-sm p-3 bg-custom-gray" style="min-height: 53vh">
                             <div class="d-flex align-items-center">
                                 <h5 class="card-title">
-                                    <i class="font-blue fa fa-cogs"></i>&nbsp; <?= __('Post Selector', 'wp-post-selector') ?> <?= __('Settings', 'wp-post-selector') ?>
+                                    <i class="font-blue fa fa-cogs"></i>&nbsp; <?= __('Post Selector', 'post-selector') ?> <?= __('Settings', 'post-selector') ?>
                                 </h5>
                                 <div class="ajax-status-spinner ms-auto d-inline-block mb-2 pe-2"></div>
                             </div>
                             <hr class="mt-1">
                             <h6>
                                 <i class="font-blue fa fa-arrow-circle-down"></i>
-								<?= esc_html__('Minimum requirement for using this Plugin', 'wp-post-selector') ?>
+								<?= esc_html__('Minimum requirement for using this Plugin', 'post-selector') ?>
                             </h6>
                             <hr>
                             <form class="send-ajax-ps-admin-settings">
@@ -119,14 +107,14 @@
                                     <div class="col-xl-6 col">
                                         <div class="mb-3">
                                             <label for="capabilitySelect"
-                                                   class="form-label mb-1 strong-font-weight"><?= esc_html__('User Role', 'wp-post-selector') ?>
+                                                   class="form-label mb-1 strong-font-weight"><?= esc_html__('User Role', 'post-selector') ?>
                                             </label>
                                             <select name="user_role"
                                                     id="capabilitySelect" class="form-select no-blur">
 												<?php
-												$select = apply_filters('ps_user_roles_select', '');
+												$select = apply_filters($this->basename.'/ps_user_roles_select', '');
 												foreach ($select as $key => $val):
-													$key == get_option('ps_user_role') ? $sel = 'selected' : $sel = ''; ?>
+													$key == get_option('ps_two_user_role') ? $sel = 'selected' : $sel = ''; ?>
                                                     <option value="<?= $key ?>" <?= $sel ?>><?= $val ?></option>
 												<?php endforeach; ?>
                                             </select>
@@ -200,3 +188,26 @@
             </div>
         </div>
     </div>
+
+    <!--MODAL ADD GALERIE-->
+    <div class="modal fade" id="galerieHandleModal" tabindex="-1" aria-labelledby="addGalerieModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content"></div>
+        </div>
+    </div>
+
+</div>
+
+
+<div id="snackbar-success"></div>
+<div id="snackbar-warning"></div>
+<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter="">
+    <div class="slides"></div>
+    <h3 class="title"></h3>
+    <a class="prev">‹</a>
+    <a class="next">›</a>
+    <a class="close">×</a>
+    <a class="play-pause"></a>
+    <ol class="indicator"></ol>
+</div>

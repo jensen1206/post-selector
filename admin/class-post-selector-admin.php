@@ -92,6 +92,7 @@ class Post_Selector_Admin {
 	}
 
 	public function admin_post_selector_two_settings_page() :void {
+		wp_enqueue_media();
 		require_once 'partials/post-selector-admin-display.php';
 	}
 
@@ -255,9 +256,6 @@ class Post_Selector_Admin {
 			'post-selector-two-lightbox-css',
 			plugin_dir_url( __FILE__ ) . 'css/tools/blueimp-gallery.css',
 			array(), $this->version );
-
-
-
 
 		//TODO Bootstrap
 		wp_enqueue_script( 'post-selector-two-bs',

@@ -15,7 +15,10 @@
 
 use Hupa\License\Register_Product_License;
 use Post\Selector\Post_Selector_Callback;
+use Post\Selector\Post_Selector_Data;
 use Post\Selector\Post_Selector_Database_Handle;
+use Post\Selector\Post_Selector_Gallery;
+use Post\Selector\Post_Selector_Helper;
 use Post\Selector\Register_Post_Selector_Endpoint;
 
 
@@ -102,8 +105,6 @@ class Post_Selector {
 	 */
 	public function __construct() {
 
-
-
 		$this->plugin_name = POST_SELECTOR_BASENAME;
 		$this->plugin_slug = POST_SELECTOR_SLUG_PATH;
 		$this->main        = $this;
@@ -124,6 +125,9 @@ class Post_Selector {
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_product_license_class();
+		$this->register_helper_class();
+		$this->register_post_selector_data();
+		$this->register_post_selector_gallery_data();
 		$this->register_post_selector_endpoint();
 		$this->register_post_selector_render_callback();
 		$this->register_post_selector_database_handle();
@@ -167,6 +171,12 @@ class Post_Selector {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/trait_post_selector_defaults.php';
 
+
+		/**
+		 * The class Helper
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class_post_selector_helper.php';
+
 		/**
 		 * The  database for the Post-Sector Plugin
 		 * of the plugin.
@@ -178,6 +188,18 @@ class Post_Selector {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/twig/autoload.php';
+
+		/**
+		 * Post Selector Admin Filter
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/post-selector-data/class_post_selector_data.php';
+
+		/**
+		 * Post Selector Gallery Admin Filter
+		 * core plugin.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gallery-data/class_post_selector_gallery.php';
 
 		/**
 		 * Update-Checker-Autoload
@@ -294,6 +316,61 @@ class Post_Selector {
 	 * @since    1.0.0
 	 * @access   private
 	 */
+	private function register_helper_class() {
+
+		global $plugin_helper;
+		$plugin_helper = new Post_Selector_Helper( $this->get_plugin_name(), $this->get_version(), $this->main );
+		$this->loader->add_action( $this->plugin_name.'/get_random_string', $plugin_helper, 'getPSRandomString' );
+		$this->loader->add_action( $this->plugin_name.'/generate_random_id', $plugin_helper, 'getPSGenerateRandomId', 10, 4 );
+		$this->loader->add_action( $this->plugin_name.'/array_to_object', $plugin_helper, 'postSelectArrayToObject' );
+		$this->loader->add_action( $this->plugin_name.'/ps_select_design_optionen', $plugin_helper, 'psSelectDesignOptionen' );
+		$this->loader->add_action( $this->plugin_name.'/get_post_slider_demo', $plugin_helper, 'getPostSliderDemo' );
+		$this->loader->add_action( $this->plugin_name.'/post_hupa_thumbnail_html', $plugin_helper, 'post_remove_thumbnail_width_height' );
+		$this->loader->add_action( $this->plugin_name.'/ps_user_roles_select', $plugin_helper, 'post_selector_user_roles_select' );
+		$this->loader->add_action( $this->plugin_name.'/get_galerie_types_select', $plugin_helper, 'getGalerieTypesSelect' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_animate_select', $plugin_helper, 'postSelectorGetAnimateSelect' );
+		$this->loader->add_action( $this->plugin_name.'/post_select_file_size_convert', $plugin_helper, 'PostSelectFileSizeConvert' );
+	}
+
+	/**
+	 * Register all the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function register_post_selector_data() {
+
+		global $post_selector_data;
+		$post_selector_data = new Post_Selector_Data( $this->get_plugin_name(), $this->get_version(), $this->main );
+
+		$this->loader->add_action( $this->plugin_name.'/get_post_select_data_type', $post_selector_data, 'getPostSelectDataType',10,2 );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_theme_pages', $post_selector_data, 'postSelectorGetThemePages' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_theme_posts', $post_selector_data, 'postSelectorGetThemePosts' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_wp_get_attachment', $post_selector_data, 'wp_get_attachment' );
+	}
+
+	/**
+	 * Register all the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
+	private function register_post_selector_gallery_data() {
+
+		global $post_selector_gallery_data;
+		$post_selector_gallery_data = new Post_Selector_Gallery( $this->get_plugin_name(), $this->get_version(), $this->main );
+
+	}
+
+	/**
+	 * Register all the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
 	private function define_admin_hooks() {
 
 		if(!get_option('ps_two_user_role')){
@@ -314,11 +391,8 @@ class Post_Selector {
 			$this->loader->add_action( 'admin_menu', $plugin_admin, 'register_post_selector_menu' );
 			$this->loader->add_action( 'wp_ajax_PS2Handle', $plugin_admin, 'prefix_ajax_PS2Handle' );
 
-			//
-
 		}
 	}
-
 
 	/**
 	 * Register all the hooks related to the Gutenberg Plugins functionality
@@ -331,7 +405,25 @@ class Post_Selector {
 		global $post_selector_database;
 		$post_selector_database = new Post_Selector_Database_Handle( $this->get_db_version(), $this->main );
 
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_by_args', $post_selector_database, 'postSelectorGetByArgs',10,3 );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_set_slider', $post_selector_database, 'postSelectorSetSlider' );
+		$this->loader->add_action( $this->plugin_name.'/update_post_selector_slider', $post_selector_database, 'updatePostSelectorSlider' );
+		$this->loader->add_action( $this->plugin_name.'/delete_post_selector_slider', $post_selector_database, 'deletePostSelectorSlider' );
+		//Gallery
+		$this->loader->add_action( $this->plugin_name.'/post_selector_set_galerie', $post_selector_database, 'postSelectorSetGalerie' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_galerie', $post_selector_database, 'postSelectorGetGalerie',10,3 );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_update_galerie', $post_selector_database, 'postSelectorUpdateGalerie' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_delete_galerie', $post_selector_database, 'PostSelectorDeleteGalerie' );
+		//Images
+		$this->loader->add_action( $this->plugin_name.'/post_selector_set_image', $post_selector_database, 'postSelectorSetImage' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_update_image', $post_selector_database, 'postSelectorUpdateImage' );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_get_images', $post_selector_database, 'postSelectorGetImages',10,3 );
+		$this->loader->add_action( $this->plugin_name.'/post_selector_delete_image', $post_selector_database, 'PostSelectorDeleteImage' );
+		$this->loader->add_action( $this->plugin_name.'/post_update_sortable_position', $post_selector_database, 'postSelectorUpdateSortablePosition',10,2 );
+
+
 		$this->loader->add_action( 'init', $post_selector_database, 'post_selector_check_jal_install' );
+		//
 
 	}
 	/**
