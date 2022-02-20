@@ -34,11 +34,18 @@ Follow the steps below to install the plugin
 
 == Screenshots ==
 
-![Alt text](https://start.hu-ku.com/theme-update/screenshot/screenshot.jpg/post-selector "My title")
-![Alt text](https://start.hu-ku.com/theme-update/screenshot/screenshot5.jpg/post-selector Description "My title")
-![Alt text](https://start.hu-ku.com/theme-update/screenshot/screenshot3.jpg/post-selector Description "My title")
-![Alt text](https://start.hu-ku.com/theme-update/screenshot/screenshot4.jpg/post-selector Description "My title")
-![Alt text](https://start.hu-ku.com/theme-update/screenshot/screenshot6.jpg/post-selector Description "My title")
+1. This is the description for the first screenshot
+2. This is the description for the second screenshot
+3. This is the description for the third screenshot
+4. This is the description for the first screenshot
+5. This is the description for the second screenshot
+6. This is the description for the third screenshot
+
+/post-selector/assets/screenshot.jpg
+/post-selector/assets/screenshot5.jpg
+/post-selector/assets/screenshot3.jpg
+/post-selector/assets/screenshot4.jpg
+/post-selector/assets/screenshot6.jpg
 
 == Changelog ==
 
