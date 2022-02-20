@@ -79,9 +79,7 @@ class Api_Request_Exec {
 		$this->config     = $config;
 		$this->main       = $main;
 		$this->plugin_dir = $plugin_dir;
-
 		$this->execute_data_make_exec();
-
 	}
 
 	private function execute_data_make_exec() {

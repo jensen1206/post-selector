@@ -6,8 +6,13 @@
 
   "update": {
     "update_url_git": "https://github.com/jensen1206/post-selector",
+    "update_branch": "release",
+    "branch_name": "master",
     "update_aktiv": "1",
     "update_type": "1"
+  },
+  "settings": {
+    "show_license_menu": "0"
   },
 
   "aktivierungs_file_path": "admin",

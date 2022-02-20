@@ -257,19 +257,24 @@ class Register_Exec_License {
 
 				update_option("{$this->basename}_server_api", $serverApi);
 				$status = true;
-				$msg = 'Update Methode aktualisiert.';
+				$msg    = 'Update Methode aktualisiert.';
 				break;
 			case'11':
-				$updateUrl = $license_wp_remote->LicenseApiDownloadFile($license_wp_remote->hupa_license_api_urls('update-url'));
-				$updOption = get_option("{$this->basename}_server_api");
+				$updateUrl               = $license_wp_remote->LicenseApiDownloadFile( $license_wp_remote->hupa_license_api_urls( 'update-url' ) );
+				$updOption               = get_option( "{$this->basename}_server_api" );
 				$updOption['update_url'] = $updateUrl->url;
-				update_option("{$this->basename}_server_api", $updOption);
+				update_option( "{$this->basename}_server_api", $updOption );
 				$status = true;
-				$msg = 'URL Token aktualisiert.';
+				$msg    = 'URL Token aktualisiert.';
+				break;
+			case'12':
+				update_option( "{$this->basename}_server_api", $getJob->config );
+				$status = true;
+				$msg    = 'Config aktualisiert.';
 				break;
 			default:
 				$status = false;
-				$msg = 'keine Daten empfangen';
+				$msg    = 'Diese Option wird nicht unterstützt!';
 		}
 
 		$return->status = $status;

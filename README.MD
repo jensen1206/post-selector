@@ -8,8 +8,8 @@ hummelt und partner | Werbeagentur GmbH
 ***
 * Contributors: jwiecker
 * Tags: Gutenberg, Custom Posts
-* Requires at least: 5.9
-* Tested up to: 5.8
+* Requires at least: 5.6
+* Tested up to: 5.9
 * Stable tag: v1.0.0
 * Requires PHP: 7.4
 

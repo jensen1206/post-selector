@@ -77,7 +77,6 @@ class Post_Selector_Admin {
 		$this->config = $config;
 	}
 
-
 	public function register_post_selector_menu() {
 		$hook_suffix = add_menu_page(
 			__( 'Post-Selector 2', 'post-selector' ),
@@ -110,7 +109,6 @@ class Post_Selector_Admin {
 			'rest_url' => get_rest_url()
 		));
 	}
-
 
 	/**
 	 * Register POST SELECTOR AJAX ADMIN RESPONSE HANDLE
@@ -175,8 +173,6 @@ class Post_Selector_Admin {
 				'rest_url' => get_rest_url()
 			)
 		);
-
-
 	}
 
 	/**
@@ -226,14 +222,18 @@ class Post_Selector_Admin {
 	 */
 	public function set_post_selector_update_checker() {
 
-		if(get_option("{$this->basename}_server_api")) {
+		if(get_option("{$this->basename}_server_api") && get_option($this->basename.'_server_api')->update->update_aktiv) {
 			$postSelectorUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-				get_option("{$this->basename}_server_api")['update_url'],
+				get_option("{$this->basename}_server_api")->update->update_url_git,
 				WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR . $this->basename . '.php',
 				$this->basename
 			);
-			if (get_option("{$this->basename}_server_api")['update_type'] == '1') {
-				$postSelectorUpdateChecker->getVcsApi()->enableReleaseAssets();
+			if (get_option("{$this->basename}_server_api")->update->update_type == '1') {
+				if (get_option("{$this->basename}_server_api")->update->update_branch == 'release') {
+					$postSelectorUpdateChecker->getVcsApi()->enableReleaseAssets();
+				} else {
+					$postSelectorUpdateChecker->setBranch(get_option("{$this->basename}_server_api")->update->branch_name);
+				}
 			}
 		}
 	}

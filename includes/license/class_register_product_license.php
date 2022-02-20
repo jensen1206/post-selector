@@ -102,14 +102,8 @@ class Register_Product_License {
 			$produkt_dir = get_template_directory() . DIRECTORY_SEPARATOR;
 		}
 
-		$update_url = get_option( "{$this->basename}_server_api" )['update_url'];
-		if ( ! get_option( "{$this->basename}_server_api" ) || !$update_url ) {
-			$serverApi = [
-				'update_aktiv' =>  $this->config->update->update_aktiv,
-				'update_type'  => $this->config->update->update_type,
-				'update_url'   => $this->config->update->update_url_git
-			];
-			update_option( "{$this->basename}_server_api", $serverApi );
+		if ( ! get_option( "{$this->basename}_server_api" )  ) {
+			update_option( "{$this->basename}_server_api", $this->config );
 		}
 
 		if ( ! get_option( "{$this->basename}_product_install_authorize" ) ) {
