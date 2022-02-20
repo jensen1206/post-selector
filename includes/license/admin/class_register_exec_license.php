@@ -188,7 +188,7 @@ class Register_Exec_License {
 				delete_option("{$this->basename}_client_secret");
 				delete_option("{$this->basename}_license_url");
 				delete_option("{$this->basename}_product_install_authorize");
-				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', $this->basename ), ucfirst($this->config->type), $this->config->name));
+				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', 'licenseLanguage' ), ucfirst($this->config->type), $this->config->name));
 				$status = true;
 				$msg = $this->config->name . ' erfolgreich deaktiviert.';
 				break;
@@ -214,7 +214,7 @@ class Register_Exec_License {
 				delete_option("{$this->basename}_client_secret");
 				delete_option("{$this->basename}_license_url");
 				delete_option("{$this->basename}_product_install_authorize");
-				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', $this->basename ), ucfirst($this->config->type), $this->config->name));
+				update_option("{$this->basename}_message", sprintf(__('The %s %s has been disabled. Contact the administrator.', 'licenseLanguage' ), ucfirst($this->config->type), $this->config->name));
 				set_transient( "$this->basename-admin-notice-error-panel-" . get_current_user_id() . "" , true, 5);
 
 				$file = $this->produkt_dir . $this->config->aktivierungs_file_path . DIRECTORY_SEPARATOR . $getJob->aktivierung_path;
@@ -257,19 +257,24 @@ class Register_Exec_License {
 
 				update_option("{$this->basename}_server_api", $serverApi);
 				$status = true;
-				$msg = 'Update Methode aktualisiert.';
+				$msg    = 'Update Methode aktualisiert.';
 				break;
 			case'11':
-				$updateUrl = $license_wp_remote->LicenseApiDownloadFile($license_wp_remote->hupa_license_api_urls('update-url'));
-				$updOption = get_option("{$this->basename}_server_api");
+				$updateUrl               = $license_wp_remote->LicenseApiDownloadFile( $license_wp_remote->hupa_license_api_urls( 'update-url' ) );
+				$updOption               = get_option( "{$this->basename}_server_api" );
 				$updOption['update_url'] = $updateUrl->url;
-				update_option("{$this->basename}_server_api", $updOption);
+				update_option( "{$this->basename}_server_api", $updOption );
 				$status = true;
-				$msg = 'URL Token aktualisiert.';
+				$msg    = 'URL Token aktualisiert.';
+				break;
+			case'12':
+				update_option( "{$this->basename}_server_api", $getJob->config );
+				$status = true;
+				$msg    = 'Config aktualisiert.';
 				break;
 			default:
 				$status = false;
-				$msg = 'keine Daten empfangen';
+				$msg    = 'Diese Option wird nicht unterstützt!';
 		}
 
 		$return->status = $status;

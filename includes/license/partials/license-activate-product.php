@@ -15,7 +15,8 @@ $aktivShow    = 'd-none';
 $registerShow = '';
 $file         = '';
 if ( $code ) {
-	$response = apply_filters("$this->basename/resource_authorization_code", $code);
+	global $license_wp_remote;
+    $response = $license_wp_remote->Activate_By_Authorization_Code($code);
 	if ($response->status) {
 		if ($response->if_file) {
 			$file = $this->plugin_dir . $this->config->aktivierungs_file_path . DIRECTORY_SEPARATOR . $this->config->aktivierungs_file;
@@ -25,7 +26,7 @@ if ( $code ) {
 		update_option("{$this->basename}_product_install_authorize", true);
 		delete_option("{$this->basename}_message");
 	} else {
-		$errMsg = sprintf(__('%s "%s" could not be activated!','licenseLanguage'),ucfirst($this->confing->type), $this->config->name);
+		$errMsg = sprintf(__('%s "%s" could not be activated!','licenseLanguage'),ucfirst($this->config->type), $this->config->name);
 	}
 	$aktivShow = '';
 	$registerShow = 'd-none';

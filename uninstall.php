@@ -29,3 +29,29 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+delete_option( "{$this->basename}_show_activated_page");
+delete_option("{$this->basename}_message");
+delete_option("{$this->basename}_product_install_authorize");
+delete_option("{$this->basename}_client_id");
+delete_option("{$this->basename}_client_secret");
+delete_option("{$this->basename}_license_url");
+delete_option('ps_two_user_role');
+delete_option("{$this->basename}_install_time");
+delete_option("{$this->basename}_server_api");
+delete_transient( "$this->basename-admin-notice-error-panel-" . get_current_user_id() . "" );
+delete_transient( "$this->basename-admin-notice-success-panel-" . get_current_user_id() . "" );
+
+
+global $wpdb;
+$table_name = $wpdb->prefix . 'ps_two_slide';
+$sql = "DROP TABLE IF EXISTS $table_name";
+$wpdb->query($sql);
+
+$table_name = $wpdb->prefix . 'ps_two_galerie';
+$sql = "DROP TABLE IF EXISTS $table_name";
+$wpdb->query($sql);
+
+$table_name = $wpdb->prefix . 'ps_two_galerie_images';
+$sql = "DROP TABLE IF EXISTS $table_name";
+$wpdb->query($sql);

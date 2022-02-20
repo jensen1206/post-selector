@@ -86,11 +86,12 @@ class Register_Product_License {
 		$this->main       = $main;
 		$this->plugin_dir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR;
 		$this->load_license_dependencies();
+		$this->register_license_wp_remote();
 
 
 		add_action( 'init', array( $this, 'load_license_textdomain' ) );
 
-		if ( ! get_option( $this->basename . '/product_install_authorize' ) || get_option( $this->basename . '/show_activated_page' ) ) {
+		if ( ! get_option( "{$this->basename}_product_install_authorize" ) || get_option( "{$this->basename}_show_activated_page" ) ) {
 			add_action( 'admin_menu', array( $this, 'register_product_license_menu' ) );
 		}
 
@@ -101,22 +102,16 @@ class Register_Product_License {
 			$produkt_dir = get_template_directory() . DIRECTORY_SEPARATOR;
 		}
 
-		$update_url = get_option( "{$this->basename}_server_api" )['update_url'];
-		if ( ! get_option( "{$this->basename}_server_api" ) || !$update_url ) {
-			$serverApi = [
-				'update_aktiv' =>  $this->config->update->update_aktiv,
-				'update_type'  => $this->config->update->update_type,
-				'update_url'   => $this->config->update->update_url_git
-			];
-			update_option( "{$this->basename}_server_api", $serverApi );
+		if ( ! get_option( "{$this->basename}_server_api" )  ) {
+			update_option( "{$this->basename}_server_api", $this->config );
 		}
 
-		if ( ! get_option( $this->basename . '/product_install_authorize' ) ) {
+		if ( ! get_option( "{$this->basename}_product_install_authorize" ) ) {
 			$file = $produkt_dir . $this->config->aktivierungs_file_path . DIRECTORY_SEPARATOR . $this->config->aktivierungs_file;
 			if ( is_file( $file ) ) {
 				delete_option( $this->basename . '_client_secret' );
 				delete_option( $this->basename . '_client_id' );
-				//@unlink( $file );
+				@unlink( $file );
 			}
 		}
 
@@ -135,7 +130,7 @@ class Register_Product_License {
 		$this->add( function () {
 			if ( get_transient( "$this->basename-admin-notice-error-panel-" . get_current_user_id() . "" ) ) {
 				$class   = 'notice notice-error is-dismissible';
-				$message = sprintf( __( '%s invalid license: To activate, enter your credentials.', $this->basename ), $this->config->name );
+				$message = sprintf( __( '%s invalid license: To activate, enter your credentials.', 'licenseLanguage' ), $this->config->name );
 				echo sprintf( '<div class="%s"><p>%s</p></div>', $class, $message );
 			}
 		}, "{$this->basename}_admin_error_notice" );
@@ -143,7 +138,7 @@ class Register_Product_License {
 		$this->add( function () {
 			if ( get_transient( "$this->basename-admin-notice-success-panel-" . get_current_user_id() . "" ) ) {
 				$class   = 'notice notice-success is-dismissible';
-				$message = sprintf( __( 'The %s plugin has been successfully activated.', $this->basename ), $this->config->name );
+				$message = sprintf( __( 'The %s plugin has been successfully activated.', 'licenseLanguage' ), $this->config->name );
 				echo sprintf( '<div class="%s"><p>%s</p></div>', $class, $message );
 				//delete_transient( "$this->basename-admin-notice-success-panel-" . get_current_user_id() . "" );
 			}
@@ -156,6 +151,12 @@ class Register_Product_License {
 	private function load_license_dependencies(): void {
 		require_once 'admin/class_register_exec_license.php';
 		require_once 'admin/class_register_api_wp_remote.php';
+	}
+
+	private function register_license_wp_remote() {
+		global $license_wp_remote;
+		$license_wp_remote = new Register_Api_WP_Remote( $this->basename, $this->version, $this->config, $this->main );
+		$license_wp_remote->init_register_license_wp_remote_api();
 	}
 
 	/**

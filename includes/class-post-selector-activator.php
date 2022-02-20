@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -20,6 +19,7 @@
  * @subpackage Post_Selector/includes
  * @author     Jens Wiecker <email@jenswiecker.de>
  */
+
 class Post_Selector_Activator {
 
 	/**
@@ -29,7 +29,12 @@ class Post_Selector_Activator {
 	 *
 	 * @since    1.0.0
 	 */
+
+
 	public static function activate() {
 
 	}
+
+
+
 }

@@ -79,17 +79,15 @@ class Api_Request_Exec {
 		$this->config     = $config;
 		$this->main       = $main;
 		$this->plugin_dir = $plugin_dir;
-
 		$this->execute_data_make_exec();
-
 	}
 
 	private function execute_data_make_exec() {
 		global $license_exec;
+		$license_exec = Register_Exec_License::instance($this->basename, $this->version, $this->config, $this->main, $this->plugin_dir);
 		$data = json_decode( file_get_contents( "php://input" ) );
 		switch ( $data->make_id ) {
 			case 'make_exec':
-				$license_exec = Register_Exec_License::instance($this->basename, $this->version, $this->config, $this->main, $this->plugin_dir);
 				$makeJob = $license_exec->make_api_exec_job($data);
 				$backMsg =  [
 					'msg' => $makeJob->msg,
@@ -104,7 +102,7 @@ class Api_Request_Exec {
 					'reply'     => 'Plugin deaktiviert',
 					'status'    => true,
 				];
-				update_option( $this->basename . '/show_activated_page', false );
+				update_option( "{$this->basename}_show_activated_page", false );
 				update_option("{$this->basename}_message",$message->msg);
 				delete_option("{$this->basename}_product_install_authorize");
 				delete_option("{$this->basename}_client_id");
