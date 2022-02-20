@@ -1,14 +1,15 @@
-=== Plugin Name ===
+=== Post-Selector Gutenberg-Block Plugin ===
 Contributors: jwiecker
-Donate link: https://wwdh.de
-Tags: comments, spam
+Tags: Gallery, Post-Filter, Slider, Category Filter
 Requires at least: 5.9
-Tested up to: 5.7
-Stable tag: 1.0.0
+Requires PHP:      7.4
+Requires at least: 5.9
+Tested up to:      5.6
+Stable tag:        1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Selection of articles in the Gutenberg block editor with countless output options.
 
 == Description ==
 
@@ -19,13 +20,11 @@ Markdown parsed.
 
 A few notes about the sections above:
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+* Slider für Beiträge
+* Individuelle Slider Einstellungen
+* Galerie für Beiträge
+* Individuelle Galerie Einstellungen
+* Beiträge als News anzeigen
 
     Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
 if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used

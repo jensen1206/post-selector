@@ -13,7 +13,7 @@
  * @package           Post_Selector
  *
  * @wordpress-plugin
- * Plugin Name:       WP-Post-Selector
+ * Plugin Name:       Post-Selector Gutenberg-Block-Plugin
  * Plugin URI:        https://www.hummelt-werbeagentur.de/
  * Description:       Auswahl von Beiträgen im Gutenberg-Block Editor mit verschiedenen Ausgabeoptionen.
  * Version:           1.0.0
@@ -22,7 +22,7 @@
  * License:           MIT License
  * Requires PHP:      7.4
  * Requires at least: 5.9
- * Tested up to:      5.7
+ * Tested up to:      5.6
  * Stable tag:        1.0.0
 
  */
