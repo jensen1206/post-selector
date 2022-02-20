@@ -33,13 +33,17 @@ Follow the steps below to install the plugin
 1. Activate the plugin via the menu `Plugins` in WordPress.
 
 == Screenshots ==
+[![release](https://img.shields.io/github/v/release/jensen1206/post-selector)](https://github.com/jensen1206/post-selector)
+[![Hupa Release](https://img.shields.io/github/release-date/jensen1206/post-selector)](https://github.com/jensen1206/post-selector/releases/latest)
+[![GitHub](https://img.shields.io/github/license/jensen1206/post-selector)](https://github.com/jensen1206/post-selector/blob/master/LICENSE.txt)
 
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot.jpg/post-selector" alt="An amazing image" />
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot2.jpg/post-selecto" alt="An amazing image" />
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot5.jpg/post-selecto" alt="An amazing image" />
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot3.jpg/post-selector" alt="An amazing image" />
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot4.jpg/post-selector" alt="An amazing image" />
-<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot6.jpg/post-selecto" alt="An amazing image" />
+[https://start.hu-ku.com/theme-update/screenshot/screenshot.jpg/post-selector Description for the first screenshot]
+[https://start.hu-ku.com/theme-update/screenshot/screenshot2.jpg/post-selector Description for the first screenshot]
+[https://start.hu-ku.com/theme-update/screenshot/screenshot5.jpg/post-selector Description for the first screenshot]
+[https://start.hu-ku.com/theme-update/screenshot/screenshot3.jpg/post-selector Description for the first screenshot]
+[https://start.hu-ku.com/theme-update/screenshot/screenshot4.jpg/post-selector Description for the first screenshot]
+[https://start.hu-ku.com/theme-update/screenshot/screenshot6.jpg/post-selector Description for the first screenshot]
+
 == Changelog ==
 
 = 1.0.0 =
