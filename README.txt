@@ -32,21 +32,6 @@ Follow the steps below to install the plugin
 1. Upload the folder `post-selector` to the directory `/wp-content/plugins/`.
 1. Activate the plugin via the menu `Plugins` in WordPress.
 
-== Screenshots ==
-
-1. This is the description for the first screenshot
-2. This is the description for the second screenshot
-3. This is the description for the third screenshot
-4. This is the description for the first screenshot
-5. This is the description for the second screenshot
-6. This is the description for the third screenshot
-
-/post-selector/assets/screenshot.jpg
-/post-selector/assets/screenshot5.jpg
-/post-selector/assets/screenshot3.jpg
-/post-selector/assets/screenshot4.jpg
-/post-selector/assets/screenshot6.jpg
-
 == Changelog ==
 
 = 1.0.0 =
