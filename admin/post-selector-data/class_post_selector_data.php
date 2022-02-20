@@ -129,10 +129,10 @@ class Post_Selector_Data {
 
 			switch ($attributes->outputType) {
 				case 1:
-					do_action('load_slider_template', $post, $attributes);
+					do_action($this->basename.'/load_slider_template', $post, $attributes);
 					break;
 				case 3:
-					do_action('load_news_template', $post, $attributes);
+					do_action($this->basename.'/load_news_template', $post, $attributes);
 					break;
 			}
 		}
@@ -158,13 +158,14 @@ class Post_Selector_Data {
 
 			$postArr = $this->order_by_args($postArr, $type, $radioOrderBy);
 			$post = $this->helper->postSelectArrayToObject($postArr);
+
 			if (isset($attributes->outputType)) {
 				switch ($attributes->outputType) {
 					case '1':
-						do_action('load_slider_template', $post, $attributes);
+						do_action($this->basename.'/load_slider_template', $post, $attributes);
 						break;
 					case '3':
-						do_action('load_news_template', $post, $attributes);
+						do_action($this->basename.'/load_news_template', $post, $attributes);
 						break;
 				}
 			}
@@ -343,7 +344,7 @@ class Post_Selector_Data {
 	 *
 	 * @return array
 	 */
-	private function get_posts_by_category($query, bool $attr = false): array
+	private function get_posts_by_category($query,  $attr = ''): array
 	{
 		$page_id = get_queried_object_id();
 		global $post;

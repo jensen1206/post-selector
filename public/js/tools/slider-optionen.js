@@ -1,4 +1,3 @@
-/*jshint esversion: 6 */
 document.addEventListener('DOMContentLoaded', function() {
   if (!document.getElementsByClassName('splide').length) {
     return false;

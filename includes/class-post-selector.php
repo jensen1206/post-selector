@@ -17,8 +17,10 @@ use Hupa\License\Register_Product_License;
 use Post\Selector\Post_Selector_Callback;
 use Post\Selector\Post_Selector_Data;
 use Post\Selector\Post_Selector_Database_Handle;
-use Post\Selector\Post_Selector_Gallery;
+use Post\Selector\Post_Selector_Galerie_Templates;
 use Post\Selector\Post_Selector_Helper;
+use Post\Selector\Post_Selector_News_Template;
+use Post\Selector\Post_Selector_Slider;
 use Post\Selector\Register_Post_Selector_Endpoint;
 
 
@@ -127,7 +129,7 @@ class Post_Selector {
 		$this->define_product_license_class();
 		$this->register_helper_class();
 		$this->register_post_selector_data();
-		$this->register_post_selector_gallery_data();
+		$this->define_templates_class();
 		$this->register_post_selector_endpoint();
 		$this->register_post_selector_render_callback();
 		$this->register_post_selector_database_handle();
@@ -158,7 +160,11 @@ class Post_Selector {
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-selector-loader.php';
-
+		/**
+		 * The class responsible for defining WP REST API Routes
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gutenberg/class_register_post_selector_endpoint.php';
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
@@ -184,22 +190,11 @@ class Post_Selector {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/database/class_post_selector_database_handle.php';
 
 		/**
-		 * TWIG autoload for PHP-Template-Engine
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/twig/autoload.php';
-
-		/**
 		 * Post Selector Admin Filter
 		 * core plugin.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/post-selector-data/class_post_selector_data.php';
 
-		/**
-		 * Post Selector Gallery Admin Filter
-		 * core plugin.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gallery-data/class_post_selector_gallery.php';
 
 		/**
 		 * Update-Checker-Autoload
@@ -207,17 +202,20 @@ class Post_Selector {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/update-checker/autoload.php';
 
+		/**
+		 * // The class responsible for defining all Templates.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/templates/class_post_selector_galerie_templates.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/templates/class_post_selector_news_template.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/templates/class_post_selector_slider.php';
+
 
 		/**
 		 * // JOB The class responsible for defining all actions that occur in the license area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/license/class_register_product_license.php';
 
-		/**
-		 * The class responsible for defining WP REST API Routes
-		 * side of the site.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/gutenberg/class_register_post_selector_endpoint.php';
+
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
@@ -316,6 +314,23 @@ class Post_Selector {
 	 * @since    1.0.0
 	 * @access   private
 	 */
+	private function define_templates_class() {
+     	$galerie_template = new Post_Selector_Galerie_Templates( $this->get_plugin_name(), $this->get_version(), $this->main );
+		$news_template = new Post_Selector_News_Template( $this->get_plugin_name(), $this->get_version(), $this->main );
+		$slider_template = new Post_Selector_Slider( $this->get_plugin_name(), $this->get_version(), $this->main );
+
+		$this->loader->add_action( $this->plugin_name.'/load_galerie_templates', $galerie_template, 'loadGalerieTemplate' );
+		$this->loader->add_action( $this->plugin_name.'/load_news_template', $news_template, 'loadNewsTemplate',10,2 );
+		$this->loader->add_action( $this->plugin_name.'/load_slider_template', $slider_template, 'loadSliderTemplate',10,2 );
+	}
+
+	/**
+	 * Register all the hooks related to the admin area functionality
+	 * of the plugin.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 */
 	private function register_helper_class() {
 
 		global $plugin_helper;
@@ -330,6 +345,8 @@ class Post_Selector {
 		$this->loader->add_action( $this->plugin_name.'/get_galerie_types_select', $plugin_helper, 'getGalerieTypesSelect' );
 		$this->loader->add_action( $this->plugin_name.'/post_selector_get_animate_select', $plugin_helper, 'postSelectorGetAnimateSelect' );
 		$this->loader->add_action( $this->plugin_name.'/post_select_file_size_convert', $plugin_helper, 'PostSelectFileSizeConvert' );
+		$this->loader->add_action( $this->plugin_name.'/ps2_svg_icons', $plugin_helper, 'ps2_svg_icons',10,3 );
+		//
 	}
 
 	/**
@@ -348,20 +365,6 @@ class Post_Selector {
 		$this->loader->add_action( $this->plugin_name.'/post_selector_get_theme_pages', $post_selector_data, 'postSelectorGetThemePages' );
 		$this->loader->add_action( $this->plugin_name.'/post_selector_get_theme_posts', $post_selector_data, 'postSelectorGetThemePosts' );
 		$this->loader->add_action( $this->plugin_name.'/post_selector_wp_get_attachment', $post_selector_data, 'wp_get_attachment' );
-	}
-
-	/**
-	 * Register all the hooks related to the admin area functionality
-	 * of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 */
-	private function register_post_selector_gallery_data() {
-
-		global $post_selector_gallery_data;
-		$post_selector_gallery_data = new Post_Selector_Gallery( $this->get_plugin_name(), $this->get_version(), $this->main );
-
 	}
 
 	/**
@@ -450,6 +453,7 @@ class Post_Selector {
 	private function register_post_selector_endpoint() {
 		global $post_selector_endpoint;
 		$post_selector_endpoint = new Register_Post_Selector_Endpoint( $this->get_plugin_name(), $this->get_version(), $this->main );
+		$this->loader->add_action('rest_api_init', $post_selector_endpoint, 'register_post_selector_routes');
 	}
 
 	/**
@@ -460,7 +464,7 @@ class Post_Selector {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new Post_Selector_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Post_Selector_Public( $this->get_plugin_name(), $this->get_version(), $this->main );
 
 		$this->loader->add_action( 'wp_ajax_nopriv_PS2HandlePublic', $plugin_public, 'prefix_ajax_PS2HandlePublic' );
 		$this->loader->add_action( 'wp_ajax_PS2HandlePublic', $plugin_public, 'prefix_ajax_PS2HandlePublic' );

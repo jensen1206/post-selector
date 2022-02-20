@@ -361,6 +361,36 @@ class Post_Selector_Helper {
 	}
 
 	/**
+	 * @param $name
+	 * @param bool $base64
+	 * @param bool $data
+	 *
+	 * @return string
+	 */
+	public function ps2_svg_icons($name, bool $base64 = true, bool $data = true): string {
+		$icon = '';
+		switch ($name){
+			case 'layer':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="ps2-icon" viewBox="0 0 16 16">
+  						  <path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882l-7.5-4zM8 9.433 1.562 6 8 2.567 14.438 6 8 9.433z"/>
+						 </svg>';
+				break;
+			case'sign-post':
+				$icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="ps2-icon" viewBox="0 0 16 16">
+  						 <path d="M7 1.414V2H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h5v1H2.5a1 1 0 0 0-.8.4L.725 8.7a.5.5 0 0 0 0 .6l.975 1.3a1 1 0 0 0 .8.4H7v5h2v-5h5a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1H9V6h4.5a1 1 0 0 0 .8-.4l.975-1.3a.5.5 0 0 0 0-.6L14.3 2.4a1 1 0 0 0-.8-.4H9v-.586a1 1 0 0 0-2 0zM13.5 3l.75 1-.75 1H2V3h11.5zm.5 5v2H2.5l-.75-1 .75-1H14z"/>
+						 </svg>';
+				break;
+		}
+		if($base64){
+			if ($data){
+				return 'data:image/svg+xml;base64,'. base64_encode($icon);
+			}
+			return base64_encode($icon);
+		}
+		return $icon;
+	}
+
+	/**
 	 * @param $id
 	 *
 	 * @return object

@@ -63,7 +63,7 @@
     $(document).on('submit', '.send-bs-form-jquery-ajax-formular', function (event) {
 
         $('.modalAction').val('PS2Handle');
-        $('.modalNonce').val(ps_ajax_obj.nonce);
+        $('.modalNonce').val(ps_two_ajax_obj.nonce);
         let form_data = $(this).serializeObject();
         send_jquery_post_form_data(form_data);
         return false;
@@ -71,7 +71,7 @@
 
     function send_jquery_post_form_data(form_data) {
         $.ajax({
-            url: ps_ajax_obj.ajax_url,
+            url: ps_two_ajax_obj.ajax_url,
             type: "POST",
             data: form_data,
             success: function (data) {
@@ -116,8 +116,8 @@
             return false;
         }
 
-        $.post(ps_ajax_obj.ajax_url, {
-            '_ajax_nonce': ps_ajax_obj.nonce,
+        $.post(ps_two_ajax_obj.ajax_url, {
+            '_ajax_nonce': ps_two_ajax_obj.nonce,
             'action': 'PS2Handle',
             method: $(this).attr('data-method'),
             id: $(this).attr('data-id'),
@@ -297,8 +297,8 @@
             uploaded_image.map(function (attachment) {
                 attachment = attachment.toJSON();
 
-                $.post(ps_ajax_obj.ajax_url, {
-                    '_ajax_nonce': ps_ajax_obj.nonce,
+                $.post(ps_two_ajax_obj.ajax_url, {
+                    '_ajax_nonce': ps_two_ajax_obj.nonce,
                     'action': 'PS2Handle',
                     method: 'add_galerie_image',
                     galerie_id: galerieId,
@@ -352,8 +352,8 @@
 
         switch (handle) {
             case 'galerie':
-                $.post(ps_ajax_obj.ajax_url, {
-                    '_ajax_nonce': ps_ajax_obj.nonce,
+                $.post(ps_two_ajax_obj.ajax_url, {
+                    '_ajax_nonce': ps_two_ajax_obj.nonce,
                     'action': 'PS2Handle',
                     method: 'get_galerie_modal_data',
                     type: type
@@ -363,8 +363,8 @@
                 break;
             case 'image':
                 let id = button.getAttribute('data-bs-id');
-                $.post(ps_ajax_obj.ajax_url, {
-                    '_ajax_nonce': ps_ajax_obj.nonce,
+                $.post(ps_two_ajax_obj.ajax_url, {
+                    '_ajax_nonce': ps_two_ajax_obj.nonce,
                     'action': 'PS2Handle',
                     method: 'get_image_modal_data',
                     type: type,
@@ -736,8 +736,8 @@
     load_slider_data();
 
     function load_slider_data(id = false, type = false) {
-        $.post(ps_ajax_obj.ajax_url, {
-            '_ajax_nonce': ps_ajax_obj.nonce,
+        $.post(ps_two_ajax_obj.ajax_url, {
+            '_ajax_nonce': ps_two_ajax_obj.nonce,
             'action': 'PS2Handle',
             method: 'get_slider_data',
             id: id,
@@ -769,8 +769,8 @@
      */
     $(document).on('click', ".btn-delete-image", function () {
         let id = $(this).attr('data-id');
-        $.post(ps_ajax_obj.ajax_url, {
-            '_ajax_nonce': ps_ajax_obj.nonce,
+        $.post(ps_two_ajax_obj.ajax_url, {
+            '_ajax_nonce': ps_two_ajax_obj.nonce,
             'action': 'PS2Handle',
             method: 'delete_image',
             id: id,
@@ -798,8 +798,8 @@
 
     function load_galerie_item(id, type) {
 
-        $.post(ps_ajax_obj.ajax_url, {
-            '_ajax_nonce': ps_ajax_obj.nonce,
+        $.post(ps_two_ajax_obj.ajax_url, {
+            '_ajax_nonce': ps_two_ajax_obj.nonce,
             'action': 'PS2Handle',
             method: 'get_galerie_data',
             id: id,
@@ -1137,8 +1137,8 @@
     });
 
     function get_galerie_type_optionen(typeId, id = false) {
-        $.post(ps_ajax_obj.ajax_url, {
-            '_ajax_nonce': ps_ajax_obj.nonce,
+        $.post(ps_two_ajax_obj.ajax_url, {
+            '_ajax_nonce': ps_two_ajax_obj.nonce,
             'action': 'PS2Handle',
             method: 'get_galerie_type_data',
             type_id: typeId,
@@ -1474,7 +1474,7 @@
         <input type="hidden" name="method" value="slider-form-handle">
         <input type="hidden" name="id" value="${id}">
         <input type="hidden" name="action" value="PS2Handle">
-        <input type="hidden" name="_ajax_nonce" value="${ps_ajax_obj.nonce}">
+        <input type="hidden" name="_ajax_nonce" value="${ps_two_ajax_obj.nonce}">
         <div class="slide-item">
         <div class="row">
         <div class="col-md-6  col-xl-6 mb-3">
@@ -2456,12 +2456,12 @@
         });
 
         $.ajax({
-            url: ps_ajax_obj.ajax_url,
+            url: ps_two_ajax_obj.ajax_url,
             type: "POST",
             data: {
                 'method': 'delete_images_array',
                 'images': itemsArray,
-                '_ajax_nonce': ps_ajax_obj.nonce,
+                '_ajax_nonce': ps_two_ajax_obj.nonce,
                 'action': 'PS2Handle',
             },
             success: function (data) {
@@ -2517,8 +2517,8 @@
                     }
                 });
 
-                $.post(ps_ajax_obj.ajax_url, {
-                    '_ajax_nonce': ps_ajax_obj.nonce,
+                $.post(ps_two_ajax_obj.ajax_url, {
+                    '_ajax_nonce': ps_two_ajax_obj.nonce,
                     'action': 'PS2Handle',
                     method: 'image_change_position',
                     data: elementArray
@@ -2564,7 +2564,7 @@
                 formData.append(name, value);
             }
         }
-        formData.append('_ajax_nonce', ps_ajax_obj.nonce);
+        formData.append('_ajax_nonce', ps_two_ajax_obj.nonce);
         formData.append('action', 'PS2Handle');
 
         //Response
@@ -2583,7 +2583,7 @@
                 }
             }
         }
-        xhr.open('POST', ps_ajax_obj.ajax_url, true);
+        xhr.open('POST', ps_two_ajax_obj.ajax_url, true);
         xhr.send(formData);
     }
 
@@ -2612,7 +2612,7 @@
     function load_galerie_data_table(galerieId) {
         let galerieTable = $('#TableGalerie').DataTable({
             "language": {
-                "url": ps_ajax_obj.data_table
+                "url": ps_two_ajax_obj.data_table
             },
 
             "columns": [
@@ -2648,11 +2648,11 @@
             "serverSide": true,
             "order": [],
             "ajax": {
-                url: ps_ajax_obj.ajax_url,
+                url: ps_two_ajax_obj.ajax_url,
                 type: 'POST',
                 data: {
                     action: 'PS2Handle',
-                    '_ajax_nonce': ps_ajax_obj.nonce,
+                    '_ajax_nonce': ps_two_ajax_obj.nonce,
                     'id': galerieId,
                     method: 'galerie_data_table'
                 }

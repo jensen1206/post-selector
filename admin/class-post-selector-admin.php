@@ -85,7 +85,7 @@ class Post_Selector_Admin {
 			get_option('ps_two_user_role'),
 			'post-selector-two-settings',
 			array( $this, 'admin_post_selector_two_settings_page' ),
-			'dashicons-slides', 7
+			apply_filters($this->basename.'/ps2_svg_icons','sign-post',true,true), 7
 		);
 
 		add_action( 'load-' . $hook_suffix, array( $this, 'post_selector_two_load_ajax_admin_options_script' ) );
@@ -103,10 +103,11 @@ class Post_Selector_Admin {
 
 		wp_register_script( 'post-selector-two-admin-ajax-script', '', [], '', true );
 		wp_enqueue_script( 'post-selector-two-admin-ajax-script' );
-		wp_localize_script( 'post-selector-two-admin-ajax-script', 'ps_ajax_obj', array(
+		wp_localize_script( 'post-selector-two-admin-ajax-script', 'ps_two_ajax_obj', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => $title_nonce,
-			'data_table'      => plugin_dir_url( __FILE__ ) . 'json/DataTablesGerman.json'
+			'data_table'      => plugin_dir_url( __FILE__ ) . 'json/DataTablesGerman.json',
+			'rest_url' => get_rest_url()
 		));
 	}
 
@@ -145,28 +146,37 @@ class Post_Selector_Admin {
 	 */
 	public function post_selector_two_plugin_editor_block_scripts(): void {
 		$plugin_asset = require plugin_dir_path( dirname( __FILE__ ) )  . 'admin/gutenberg/post-selector-data/build/index.asset.php';
+
+
 		// Scripts.
-		wp_enqueue_script(
+		wp_register_script(
 			'gutenberg-post-selector-two-block',
 			plugins_url($this->basename).'/admin/gutenberg/post-selector-data/build/index.js',
 			$plugin_asset['dependencies'], $plugin_asset['version'], true
 		);
 
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations('gutenberg-post-selector-two-block', 'post-selector', plugin_dir_path( dirname( __FILE__ ) ) . 'languages');
+		}
+
 		// Styles.
 		wp_enqueue_style(
 			'gutenberg-post-selector-two-block', // Handle.
-			plugins_url($this->basename).'/admin/gutenberg/post-selector-data/build/index.css', array(), $plugin_asset['Version']
+			plugins_url($this->basename).'/admin/gutenberg/post-selector-data/build/index.css', array(), $plugin_asset['version']
 		);
 
-		wp_register_script( 'post-selector-two-rest-gutenberg-js-localize', '', [], $plugin_asset['Version'], true );
+		wp_register_script( 'post-selector-two-rest-gutenberg-js-localize', '', [], $plugin_asset['version'], true );
 		wp_enqueue_script( 'post-selector-two-rest-gutenberg-js-localize' );
 		wp_localize_script( 'post-selector-two-rest-gutenberg-js-localize',
 			'PS2RestObj',
 			array(
-				'url'   => esc_url_raw( rest_url( 'post-selector-endpoint/v2/method/' ) ),
-				'nonce' => wp_create_nonce( 'wp_rest' )
+				'url'   => esc_url_raw( rest_url( 'post-selector-endpoint/v2/' ) ),
+				'nonce' => wp_create_nonce( 'wp_rest' ),
+				'rest_url' => get_rest_url()
 			)
 		);
+
+
 	}
 
 	/**
@@ -180,6 +190,7 @@ class Post_Selector_Admin {
 			'render_callback' => array($post_selector_callback, 'callback_post_selector_two_galerie'),
 			'editor_script'   => 'gutenberg-post-selector-two-galerie',
 		) );
+
 	}
 
 	/**
@@ -191,11 +202,15 @@ class Post_Selector_Admin {
 		$plugin_asset = require plugin_dir_path( dirname( __FILE__ ) )  . 'admin/gutenberg/galerie-data/build/index.asset.php';
 
 		// Scripts.
-		wp_enqueue_script(
+		wp_register_script(
 			'gutenberg-post-selector-two-galerie',
 			plugins_url($this->basename).'/admin/gutenberg/galerie-data/build/index.js',
 			$plugin_asset['dependencies'], $plugin_asset['version'], true
 		);
+
+		if (function_exists('wp_set_script_translations')) {
+			wp_set_script_translations('gutenberg-post-selector-two-galerie', 'post-selector', plugin_dir_path( dirname( __FILE__ ) ) . 'languages');
+		}
 
 		// Styles.
 		wp_enqueue_style(

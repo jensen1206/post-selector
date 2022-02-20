@@ -88,6 +88,7 @@ class Post_Selector_Admin_Ajax {
 
 		$this->basename   = $basename;
 		$this->version    = $version;
+		$this->main = $main;
 		$this->plugin_dir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR;
 		$this->method     = '';
 		if ( isset( $_POST['daten'] ) ) {
@@ -98,9 +99,6 @@ class Post_Selector_Admin_Ajax {
 		if ( ! $this->method ) {
 			$this->method = $_POST['method'];
 		}
-
-		$this->main = $main;
-
 	}
 
 	public function ps2_admin_ajax_handle() {

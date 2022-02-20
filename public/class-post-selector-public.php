@@ -10,6 +10,8 @@
  * @subpackage Post_Selector/public
  */
 
+use Post\Selector\Post_Selector_Public_Ajax;
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -41,6 +43,15 @@ class Post_Selector_Public {
 	private string $version;
 
 	/**
+	 * Store plugin main class to allow public access.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var Post_Selector $main The main class.
+	 */
+	private Post_Selector $main;
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @param      string    $plugin_name The name of the plugin.
@@ -48,11 +59,11 @@ class Post_Selector_Public {
 	 *
 	 *@since    1.0.0
 	 */
-	public function __construct( string $plugin_name, string $version ) {
+	public function __construct( string $plugin_name, string $version, Post_Selector  $main) {
 
 		$this->basename = $plugin_name;
 		$this->version = $version;
-
+		$this->main = $main;
 	}
 
 	/**
@@ -61,7 +72,10 @@ class Post_Selector_Public {
 	 * ===================================================
 	 */
 	public function prefix_ajax_PS2HandlePublic(): void {
-
+		check_ajax_referer( 'post_selector_two_public_handle' );
+		require_once 'ajax/class_post_selector_public_ajax.php';
+		$publicAjaxHandle = new Post_Selector_Public_Ajax($this->basename, $this->main);
+		wp_send_json($publicAjaxHandle->ps2_public_ajax_handle());
 	}
 
 	/**
@@ -187,13 +201,12 @@ class Post_Selector_Public {
 			$modificated, true );
 
 		$public_nonce = wp_create_nonce( 'post_selector_two_public_handle' );
-		wp_register_script( 'post-selector-two-admin-ajax-script', '', [], '', true );
-		wp_enqueue_script( 'post-selector-two-admin-ajax-script' );
-		wp_localize_script( 'post-selector-two-admin-ajax-script', 'ps_two_ajax_obj', array(
+		wp_register_script( 'post-selector-two-public-ajax-script', '', [], '', true );
+		wp_enqueue_script( 'post-selector-two-public-ajax-script' );
+		wp_localize_script( 'post-selector-two-public-ajax-script', 'ps_two_ajax_obj', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'nonce'    => $public_nonce,
 			'rest_url' => get_rest_url()
 		));
 	}
-
 }

@@ -2,17 +2,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let wow = new WOW(
         {
-            boxClass: 'wow',      // animated element css class (default is wow)
-            animateClass: 'animate__animated', // animation css class (default is animated)
-            offset: 0,          // distance to the element when triggering the animation (default is 0)
-            mobile: true,       // trigger animations on mobile devices (default is true)
-            live: true,       // act on asynchronously loaded content (default is true)
+            boxClass: 'wow',
+            animateClass: 'animate__animated',
+            offset: 0,
+            mobile: true,
+            live: true,
             callback: function (box) {
-                // the callback is fired every time an animation is started
-                // the argument that is passed in is the DOM node being animated
             },
-            scrollContainer: null,    // optional scroll container selector, otherwise use window,
-            resetAnimation: true,     // reset animation on end (default is true)
+            scrollContainer: null,
+            resetAnimation: true,
         }
     );
     wow.init();
@@ -84,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (splideImgContainer) {
         let splideNode = Array.prototype.slice.call(splideImgContainer, 0);
         splideNode.forEach(function (splideNode) {
-            // console.log(splideNode.clientWidth)
             let splideRand = splideNode.getAttribute('data-rand');
             let splideId = splideNode.getAttribute('data-id');
             set_new_splide_instance_settings(splideRand, splideId);
@@ -97,9 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
         function set_new_splide_instance_settings(rand, slideId) {
             let xhr = new XMLHttpRequest();
             let formData = new FormData();
-            xhr.open('POST', ps_ajax_obj.ajax_url, true);
-            formData.append('_ajax_nonce', ps_ajax_obj.nonce);
-            formData.append('action', 'PostSelHandlePublic');
+            xhr.open('POST', ps_two_ajax_obj.ajax_url, true);
+            formData.append('_ajax_nonce', ps_two_ajax_obj.nonce);
+            formData.append('action', 'PS2HandlePublic');
             formData.append('method', 'get_slider_settings');
             formData.append('id', slideId);
             formData.append('rand', rand);
