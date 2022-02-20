@@ -228,13 +228,15 @@ class Post_Selector_Admin {
 				WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->basename . DIRECTORY_SEPARATOR . $this->basename . '.php',
 				$this->basename
 			);
-			if (get_option("{$this->basename}_server_api")->update->update_type == '1') {
+
+			$postSelectorUpdateChecker->setBranch('nextRelease');
+			/*if (get_option("{$this->basename}_server_api")->update->update_type == '1') {
 				if (get_option("{$this->basename}_server_api")->update->update_branch == 'release') {
 					$postSelectorUpdateChecker->getVcsApi()->enableReleaseAssets();
 				} else {
 					$postSelectorUpdateChecker->setBranch(get_option("{$this->basename}_server_api")->update->branch_name);
 				}
-			}
+			}*/
 		}
 	}
 
