@@ -33,20 +33,13 @@ Follow the steps below to install the plugin
 1. Activate the plugin via the menu `Plugins` in WordPress.
 
 == Screenshots ==
-1. This is the description for the first screenshot
-2. This is the description for the second screenshot
-3. This is the description for the third screenshot
-4. This is the description for the first screenshot
-5. This is the description for the second screenshot
-6. This is the description for the third screenshot
 
-[https://start.hu-ku.com/theme-update/screenshot/screenshot.jpg/post-selector Description for the first screenshot]
-[https://start.hu-ku.com/theme-update/screenshot/screenshot2.jpg/post-selector Description for the first screenshot]
-[https://start.hu-ku.com/theme-update/screenshot/screenshot5.jpg/post-selector Description for the first screenshot]
-[https://start.hu-ku.com/theme-update/screenshot/screenshot3.jpg/post-selector Description for the first screenshot]
-[https://start.hu-ku.com/theme-update/screenshot/screenshot4.jpg/post-selector Description for the first screenshot]
-[https://start.hu-ku.com/theme-update/screenshot/screenshot6.jpg/post-selector Description for the first screenshot]
-
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot.jpg/post-selector" alt="An amazing image" />
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot2.jpg/post-selecto" alt="An amazing image" />
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot5.jpg/post-selecto" alt="An amazing image" />
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot3.jpg/post-selector" alt="An amazing image" />
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot4.jpg/post-selector" alt="An amazing image" />
+<img src="https://start.hu-ku.com/theme-update/screenshot/screenshot6.jpg/post-selecto" alt="An amazing image" />
 == Changelog ==
 
 = 1.0.0 =
