@@ -91,9 +91,7 @@ class Register_Product_License {
 
 		add_action( 'init', array( $this, 'load_license_textdomain' ) );
 
-		if ( ! get_option( "{$this->basename}_product_install_authorize" ) || get_option( "{$this->basename}_show_activated_page" ) ) {
-			add_action( 'admin_menu', array( $this, 'register_product_license_menu' ) );
-		}
+
 
 		if ( $config->type == 'plugin' ) {
 			$produkt_dir = $this->plugin_dir;
@@ -106,6 +104,10 @@ class Register_Product_License {
 			update_option( "{$this->basename}_server_api", $this->config );
 		}
 
+		if ( ! get_option( "{$this->basename}_product_install_authorize" ) || get_option("{$this->basename}_server_api")->settings->show_license_menu == '1' ) {
+			add_action( 'admin_menu', array( $this, 'register_product_license_menu' ) );
+		}
+
 		if ( ! get_option( "{$this->basename}_product_install_authorize" ) ) {
 			$file = $produkt_dir . $this->config->aktivierungs_file_path . DIRECTORY_SEPARATOR . $this->config->aktivierungs_file;
 			if ( is_file( $file ) ) {
@@ -114,6 +116,7 @@ class Register_Product_License {
 				@unlink( $file );
 			}
 		}
+
 
 		$this->add( function () {
 			check_ajax_referer( 'register_license_handle' );

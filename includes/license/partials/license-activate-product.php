@@ -81,9 +81,11 @@ $reloadUrl = admin_url();
                                                id="clientSecretInput" autocomplete="cc-number" required>
                                     </div>
                                 </div>
+                                <?php if(!get_option("{$this->basename}_product_install_authorize")): ?>
                                 <button id="saveBtn" type="submit" class="btn btn-primary"><i class="bi bi-save"></i>&nbsp;
 	                                <?=__('Save', 'licenseLanguage')?>
                                 </button>
+                                <?php endif; ?>
                                 <span id="activateBtn"></span>
                             </form>
                         </div>

@@ -383,6 +383,8 @@ class Post_Selector {
 		if ( is_file( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-post-selector-admin.php' ) && get_option( "{$this->plugin_name}_product_install_authorize" ) ) {
 			$plugin_admin = new Post_Selector_Admin( $this->get_plugin_name(), $this->get_version(), $this->main, $this->get_license_config() );
 			$this->loader->add_action( 'init', $plugin_admin, 'set_post_selector_update_checker' );
+			$this->loader->add_action( 'in_plugin_update_message-' . $this->plugin_name . '/' . $this->plugin_name .'.php', $plugin_admin, 'post_selector_show_upgrade_notification',10,2 );
+
 
 			//Gutenberg INIT
 			$this->loader->add_action( 'init', $plugin_admin, 'gutenberg_block_post_selector_two_register' );
