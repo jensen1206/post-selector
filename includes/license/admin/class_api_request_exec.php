@@ -89,9 +89,11 @@ class Api_Request_Exec {
 		switch ( $data->make_id ) {
 			case 'make_exec':
 				$makeJob = $license_exec->make_api_exec_job($data);
+				isset($makeJob->data) && !empty($makeJob->data) ? $makeJobData = $makeJob->data : $makeJobData = false;
 				$backMsg =  [
 					'msg' => $makeJob->msg,
 					'status' => $makeJob->status,
+					'data' => $makeJobData
 				];
 				echo json_encode($backMsg);
 				exit();

@@ -268,9 +268,22 @@ class Register_Exec_License {
 				$msg    = 'URL Token aktualisiert.';
 				break;
 			case'12':
-				update_option( "{$this->basename}_server_api", $getJob->config );
+				$return->data = json_encode($this->config);
 				$status = true;
-				$msg    = 'Config aktualisiert.';
+				$msg    = 'Config Daten gesendet.';
+				break;
+			case'13':
+				$config_file = plugin_dir_path( dirname( __FILE__ ) ) . 'config.json';
+				if(!is_file($config_file)){
+					$status = false;
+					$msg = 'Config-File nicht gefunden.';
+				} else {
+					file_put_contents($config_file, $getJob->config);
+					update_option( "{$this->basename}_server_api", json_decode($getJob->config) );
+					$status = true;
+					$msg    = 'Config File aktualisiert.';
+				}
+
 				break;
 			default:
 				$status = false;
